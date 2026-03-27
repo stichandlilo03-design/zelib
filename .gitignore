@@ -1,4 +1,5 @@
 .env
 .env.local
-config.js
-*.secret
+.DS_Store
+node_modules
+.vercel
